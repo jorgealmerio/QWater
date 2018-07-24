@@ -6,7 +6,8 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
 
   ## Tutorial em Português
 
-    Preparando o Qgis
+ ###Preparando o Qgis
+ 
     • Criar um novo projeto Qgis.
     • Ajustar o sistema de coordenadas do projeto para Sirgas 2000, na faixa meridiana da área 
     onde a rede será projetada (por exemplo para Salvador - EPSG: 31984).
@@ -29,15 +30,18 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     • Clicar em <Complementos/Qwater/Make epanet> e aceitar todas as mensagens
     • Para todos os shapes, salvar e sair do modo de edição
     •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone de ferradura.
-    Traçando a rede
-    Reservatório
+ 
+ ###Traçando a rede
+ 
+ ####Reservatório
+ 
     • Selecionar o shape de reservatórios e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os reservatórios (nível fixo), preenchendo o campo “HEAD” com a Cota do 
     Terreno. Abrir a tabela para verificar que todos os reservatórios tenham cota.
     • Alterar a apresentação do rótulo para ==> 'Nó: ' || "DC_ID"  ||  '\n Cota= ' || "HEAD" 
     • Salvar o shape e sair do modo de edição
-    Nós
+####Nós
     • Selecionar o shape de nós e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os nós
