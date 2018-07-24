@@ -1,4 +1,5 @@
 ![valuetool icon](/images/icon.png)
+<img src="/images/icon.png" width="50"/>
 # QWater 
 Hydraulic design and analysis of water supply networks (using EPANET)
 
