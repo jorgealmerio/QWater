@@ -19,4 +19,4 @@ Juan Santiago Ramseyer
 
 ### DISCLAIMER OF USE
 
-<p class="western">This plugin is subject to the terms of the license <a href="https://www.gnu.org/licenses/gpl-3.0.html" GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 </a>, so any damage or consequences of using the plugin and its results in any order is the sole responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.</p>
+<p class="western">This plugin is subject to the terms of the license <a href="https://www.gnu.org/licenses/gpl-3.0.html" GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 </a></p><p>, so any damage or consequences of using the plugin and its results in any order is full responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.</p>
