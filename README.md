@@ -6,15 +6,15 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
 
 ## [Tutorial em Português](tutorial_ptbr.md)
 
-<h1 class="western"><a name="__RefHeading___Toc3820_1012792670"></a>AUTHOR</h1>
-<p class="western">Plugin desenvolvido por Jorge Alm&eacute;rio Sousa Moreira, Engenheiro Civil.</p>
-<p class="western">D&uacute;vidas, cr&iacute;ticas e sugest&otilde;es s&atilde;o bem vindas.</p>
+## AUTHOR
+<p class="western">Plugin under developing by Jorge Alm&eacute;rio Sousa Moreira, Engenheiro Civil.</p>
+<p class="western">Questions and suggestions are welcome!</p>
 <p class="western">Email: <a class="western" href="mailto:jorgealmerio@yahoo.com.br"> jorgealmerio@yahoo.com.br </a></p>
 <p class="western">Plugin Site: <a class="western" href="https://github.com/jorgealmerio/QWater/blob/master/README.md"> github.com/jorgealmerio/QWater </a></p>
-<p class="western">Bugs, Falhas e solicita&ccedil;&otilde;es: <a class="western" href="https://github.com/jorgealmerio/QEsg/issues"> github.com/jorgealmerio/QWater/issues </a></p>
+<p class="western">Bugs, Errors, Issues and suggestions: <a class="western" href="https://github.com/jorgealmerio/QWater/issues"> github.com/jorgealmerio/QWater/issues </a></p>
 <p class="western" style="line-height: 100%;">&nbsp;</p>
-<h1 class="western"><a name="__RefHeading___Toc3822_1012792670"></a>COLLABORATOR</h1>
+## COLLABORATOR
 <p class="western">Juan Santiago Ramseyer</p>
 <p class="western" style="line-height: 100%;">&nbsp;</p>
-<h1 class="western"><a name="__RefHeading___Toc3093_1012792670"></a>DISCLAIMER OF USE</h1>
-<p class="western" style="line-height: 100%;">Esse plugin est&aacute; sujeito aos termos da licen&ccedil;a &ldquo; <a class="western" href="https://www.gnu.org/licenses/gpl-3.0.html"> <em> GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 </em> </a> &rdquo;, portanto os danos ou consequ&ecirc;ncias da utiliza&ccedil;&atilde;o do plugin e/ou dos seus resultados, em qualquer ordem &eacute; de inteira responsabilidade do usu&aacute;rio final, ficando os desenvolvedores isentos de qualquer responsabilidade t&eacute;cnica ou jur&iacute;dica inerente da utiliza&ccedil;&atilde;o com ou sem inabilidade no uso do mesmo, inclusive no caso de eventual falha comprovada do plugin.</p>
+## DISCLAIMER OF USE
+This plugin is subject to the terms of the license [GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007](https://www.gnu.org/licenses/gpl-3.0.html), so any damage or consequences of using the plugin and / or its results in any order is the sole responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.
