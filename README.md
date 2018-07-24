@@ -6,17 +6,17 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
 
 ## [Tutorial em Português](tutorial_ptbr.md)
 
-## AUTHOR
-<p class="western">Plugin under developing by Jorge Alm&eacute;rio Sousa Moreira, Engenheiro Civil.</p>
+### AUTHOR
+<p class="western">Plugin under development by Jorge Alm&eacute;rio Sousa Moreira, Engenheiro Civil.</p>
 <p class="western">Questions and suggestions are welcome!</p>
 <p class="western">Email: <a class="western" href="mailto:jorgealmerio@yahoo.com.br"> jorgealmerio@yahoo.com.br </a></p>
 <p class="western">Plugin Site: <a class="western" href="https://github.com/jorgealmerio/QWater/blob/master/README.md"> github.com/jorgealmerio/QWater </a></p>
 <p class="western">Bugs, Errors, Issues and suggestions: <a class="western" href="https://github.com/jorgealmerio/QWater/issues"> github.com/jorgealmerio/QWater/issues </a></p>
 <p class="western" style="line-height: 100%;">&nbsp;</p>
 
-## COLLABORATOR
+### COLLABORATOR
 Juan Santiago Ramseyer
 
-## DISCLAIMER OF USE
+### DISCLAIMER OF USE
 
-This plugin is subject to the terms of the license <a GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 href="https://www.gnu.org/licenses/gpl-3.0.html"</a>, so any damage or consequences of using the plugin and / or its results in any order is the sole responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.
+<p class="western">This plugin is subject to the terms of the license <a GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 href="https://www.gnu.org/licenses/gpl-3.0.html"</a>, so any damage or consequences of using the plugin and / or its results in any order is the sole responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.</p>
