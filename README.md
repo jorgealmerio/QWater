@@ -1,4 +1,5 @@
-# QWater ![valuetool icon](/images/icon.svg)
+![valuetool icon](/images/qwater.svg)
+# QWater 
 Hydraulic design and analysis of water supply networks (using EPANET)
 
 QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. It allows to design and analyze water supply networks using EPANET. It allows to write EPANET INP files as well as running an EPANET simulation from QGIS complete with loading the result data. QWater contains a function to calculate economic diameters based on given flowrates. The functions are accessible from the Quantum GIS plugin menu and toolbars.
@@ -6,7 +7,7 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
 
 ## Tutorial em Português
 
-    Preparando o Qgis
+    ### Preparando o Qgis
     • Criar um novo projeto Qgis.
     • Ajustar o sistema de coordenadas do projeto para Sirgas 2000, na faixa meridiana da área 
     onde a rede será projetada (por exemplo para Salvador - EPSG: 31984).
@@ -29,15 +30,15 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     • Clicar em <Complementos/Qwater/Make epanet> e aceitar todas as mensagens
     • Para todos os shapes, salvar e sair do modo de edição
     •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone de ferradura.
-    Traçando a rede
-    Reservatório
+    ####Traçando a rede
+    #####Reservatório
     • Selecionar o shape de reservatórios e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os reservatórios (nível fixo), preenchendo o campo “HEAD” com a Cota do 
     Terreno. Abrir a tabela para verificar que todos os reservatórios tenham cota.
     • Alterar a apresentação do rótulo para ==> 'Nó: ' || "DC_ID"  ||  '\n Cota= ' || "HEAD" 
     • Salvar o shape e sair do modo de edição
-    Nós
+    #####Nós
     • Selecionar o shape de nós e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os nós
@@ -45,7 +46,7 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     todos os nós tenham cota.
     • Alterar a apresentação do rótulo para ==> 'Nó: ' || "DC_ID"  ||  '\n Cota= ' || "ELEVATION"
     • Salvar o shape e sair do modo de edição
-    Trechos
+    #####Trechos
     • Selecionar o shape de trechos e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Traçar todos os trechos conforme a direção do fluxo prevista (de montante para jusante). Um
@@ -72,26 +73,26 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     ◦ Atualizar o campo “STATUS” (tubo aberto = ‘OPEN’ ou fechado = ‘CLOSE’) com a 
     calculadora.
     • Salvar o shape e sair do modo de edição.
-    Calculando a demanda
+    ####Calculando a demanda
     • Clicar em <Complementos/Qwater/Calc Flow>. Deve aparecer a mensagem “Demanda nos 
     nós calculada com sucesso”. Esta rotina calcula a vazão unitária a partir da demanda 
     distribuída alocando em cada nó, o produto da vazão unitária vezes a metade da extensão 
     dos trechos conectados ao nó.
     • Salvar o shape de nós e sair do modo de edição.
-    Simulação preliminar da rede
+    ####Simulação preliminar da rede
     • Clicar em <Complementos/Qwater/Run Epanet Simulation> e aguardar a apresentação da 
     mensagem. Se a mensagem indicar a ocorrência de erros, analisar as indicações dos erros na 
     aba “Report”. 
     • Se a simulação foi bem-sucedida, salvar os shapes e sair do modo de edição.
-    Otimização dos diâmetros da rede
+    ####Otimização dos diâmetros da rede
     • Clicar em <Complementos/Qwater/Calculate economics diameter> e confirme a mensagem 
     de substituir os valores do campo “DIAMETER”.
     • Salvar os shapes e sair do modo de edição.
-    Simulação da rede com os diâmetros otimizados
+    ####Simulação da rede com os diâmetros otimizados
     • Clicar em <Complementos/Qwater/Run Epanet Simulation> e aguardar a apresentação da 
     mensagem.
     • Se a simulação foi bem-sucedida, salvar os shapes e sair do modo de edição.
-    Ajustes finais
+    ####Ajustes finais
     • Salvar o projeto
     • Salvar o projeto (sugestão nome anterior mais result, pe: Rede_result.qgs).
     • Clicar em <Complementos/Qwater/Load default Stiles>.
