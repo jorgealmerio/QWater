@@ -1,4 +1,4 @@
-![valuetool icon](/images/icon.png =20x20)
+![valuetool icon](/images/icon.png)
 # QWater 
 Hydraulic design and analysis of water supply networks (using EPANET)
 
@@ -30,7 +30,9 @@ defeito = 5 m/s)
 • Clicar em <Complementos/Qwater/Make epanet> e aceitar todas as mensagens
 • Para todos os shapes, salvar e sair do modo de edição
 •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone de ferradura.
+
 ####Traçando a rede
+
 #####Reservatório
 • Selecionar o shape de reservatórios e clicar no botão de edição
 • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
