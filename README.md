@@ -1,4 +1,4 @@
-![valuetool icon](/images/qwater.svg)
+![valuetool icon](/images/qwater.svg =20x20)
 # QWater 
 Hydraulic design and analysis of water supply networks (using EPANET)
 
