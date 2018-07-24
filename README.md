@@ -6,7 +6,7 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
 
   ## Tutorial em Português
 
- ###Preparando o Qgis
+ ### Preparando o Qgis
  
     • Criar um novo projeto Qgis.
     • Ajustar o sistema de coordenadas do projeto para Sirgas 2000, na faixa meridiana da área 
@@ -31,17 +31,16 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     • Para todos os shapes, salvar e sair do modo de edição
     •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone de ferradura.
  
- ###Traçando a rede
+ ### Traçando a rede
  
- ####Reservatório
- 
+ #### Reservatório 
     • Selecionar o shape de reservatórios e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os reservatórios (nível fixo), preenchendo o campo “HEAD” com a Cota do 
     Terreno. Abrir a tabela para verificar que todos os reservatórios tenham cota.
     • Alterar a apresentação do rótulo para ==> 'Nó: ' || "DC_ID"  ||  '\n Cota= ' || "HEAD" 
     • Salvar o shape e sair do modo de edição
-####Nós
+#### Nós
     • Selecionar o shape de nós e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Locar todos os nós
@@ -49,7 +48,7 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     todos os nós tenham cota.
     • Alterar a apresentação do rótulo para ==> 'Nó: ' || "DC_ID"  ||  '\n Cota= ' || "ELEVATION"
     • Salvar o shape e sair do modo de edição
-    Trechos
+#### Trechos
     • Selecionar o shape de trechos e clicar no botão de edição
     • Habilitar o rótulo de camada para apresentar o campo “DC_ID”
     • Traçar todos os trechos conforme a direção do fluxo prevista (de montante para jusante). Um
@@ -76,18 +75,24 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     ◦ Atualizar o campo “STATUS” (tubo aberto = ‘OPEN’ ou fechado = ‘CLOSE’) com a 
     calculadora.
     • Salvar o shape e sair do modo de edição.
-    Calculando a demanda
+
+### Calculando a demanda
+
     • Clicar em <Complementos/Qwater/Calc Flow>. Deve aparecer a mensagem “Demanda nos 
     nós calculada com sucesso”. Esta rotina calcula a vazão unitária a partir da demanda 
     distribuída alocando em cada nó, o produto da vazão unitária vezes a metade da extensão 
     dos trechos conectados ao nó.
     • Salvar o shape de nós e sair do modo de edição.
-    Simulação preliminar da rede
+
+### Simulação preliminar da rede
+
     • Clicar em <Complementos/Qwater/Run Epanet Simulation> e aguardar a apresentação da 
     mensagem. Se a mensagem indicar a ocorrência de erros, analisar as indicações dos erros na 
     aba “Report”. 
     • Se a simulação foi bem-sucedida, salvar os shapes e sair do modo de edição.
-    Otimização dos diâmetros da rede
+    
+### Otimização dos diâmetros da rede
+
     • Clicar em <Complementos/Qwater/Calculate economics diameter> e confirme a mensagem 
     de substituir os valores do campo “DIAMETER”.
     • Salvar os shapes e sair do modo de edição.
@@ -95,7 +100,9 @@ QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. I
     • Clicar em <Complementos/Qwater/Run Epanet Simulation> e aguardar a apresentação da 
     mensagem.
     • Se a simulação foi bem-sucedida, salvar os shapes e sair do modo de edição.
-    Ajustes finais
+    
+### Ajustes finais
+    
     • Salvar o projeto
     • Salvar o projeto (sugestão nome anterior mais result, pe: Rede_result.qgs).
     • Clicar em <Complementos/Qwater/Load default Stiles>.
