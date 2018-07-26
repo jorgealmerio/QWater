@@ -1,0 +1,40 @@
+; the next section is mandatory
+[general]
+name=QWater
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
+description=Hydraulic design and analysis of water supply networks	(using EPANET)
+category=Plugins
+version=3.0.1
+author=Jorge Almerio
+email=jorgealmerio@yahoo.com.br
+; end of mandatory metadata
+
+; start of optional metadata
+changelog=
+    3.0.1 - 2018/07/21 - Bug fixs and improvements:
+        - Option to unset QWater layer from settings dialog
+        - New Project option bug
+        - Load Styles bug
+        - Minimum description and instruction web page created and accessible from About menu
+        - Minor improvements
+    3.0.0 - 2018/04/09 - Update to Qgis 3.0
+    1.0.0 - 2016/07/19 - Initial Release
+		
+
+; tags are in comma separated value format, spaces are allowed
+tags=hydraulic,analysis,epanet,water,supply,network,export,inp,giswater,pipe
+
+; these metadata can be empty
+homepage=https://github.com/jorgealmerio/QWater/blob/master/README.md
+tracker=https://github.com/jorgealmerio/QWater/issues
+repository=https://github.com/jorgealmerio/QWater
+icon=icon.png
+
+; experimental flag
+experimental=True
+
+; deprecated flag (applies to the whole plugin and not only to the uploaded version)
+deprecated=False
+
+about=QWater is a plugin that uses GHydraulics Plugin (embedded) from <a href="mailto:sdteffen@sdteffen.de">Steffen Macke</a>. It allows to design and analyze water supply networks using EPANET. It allows to write EPANET INP files as well as running an EPANET simulation from QGIS complete with loading the result data. QWater contains a function to calculate economic diameters based on given flowrates. The functions are accessible from the Quantum GIS plugin menu and toolbars.

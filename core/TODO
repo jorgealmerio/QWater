@@ -1,0 +1,6 @@
+Robustness: Deal with incomplete template files
+Reduce length of pipes following virtual pipes (length field).
+Refactor junction, pipe into class
+Autoconfigure if layer name matches
+Remove duplicate features.
+Remove superfluous QString... when serializing to project file.
