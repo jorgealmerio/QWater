@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="3cm" height="3cm" viewBox="103 147 43 43" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <path style="fill: #e6e6e6" d="M 110 157 C 110,149 110,149 115,149 C 120,149 120,149 125,149 C 130,149 130,149 130,157 C 130,157 145,157 145,157 C 145,157 145,189 145,189 C 145,189 110,189 110,189 C 110,189 110,165 110,157z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 110 157 C 110,149 110,149 115,149 C 120,149 120,149 125,149 C 130,149 130,149 130,157 C 130,157 145,157 145,157 C 145,157 145,189 145,189 C 145,189 110,189 110,189 C 110,189 110,165 110,157"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 110 157 C 110,149 110,149 115,149 C 120,149 120,149 125,149 C 130,149 130,149 130,157 C 130,157 145,157 145,157 C 145,157 145,189 145,189 C 145,189 110,189 110,189 C 110,189 110,165 110,157"/>
+    <polygon style="fill: #ffffff" points="110,189 105,161 140,161 145,189 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="110,189 105,161 140,161 145,189 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="110,189 105,161 140,161 145,189 "/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="125" y="175">
+      <tspan x="125" y="175"></tspan>
+    </text>
+  </g>
+</svg>

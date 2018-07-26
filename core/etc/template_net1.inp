@@ -1,0 +1,128 @@
+[TITLE]
+ EPANET Example Network 1
+A simple example of modeling chlorine decay. Both bulk and
+wall reactions are included. 
+
+[JUNCTIONS]
+
+[RESERVOIRS]
+
+[TANKS]
+
+[PIPES]
+
+[PUMPS]
+
+[VALVES]
+
+[TAGS]
+
+[DEMANDS]
+;Junction        	Demand      	Pattern         	Category
+
+[STATUS]
+;ID              	Status/Setting
+
+[PATTERNS]
+;ID              	Multipliers
+;Demand Pattern
+ 1               	1.0         	1.2         	1.4         	1.6         	1.4         	1.2         
+ 1               	1.0         	0.8         	0.6         	0.4         	0.6         	0.8         
+
+[CURVES]
+;ID              	X-Value     	Y-Value
+;PUMP: Pump Curve for Pump 9
+ 1               	1500        	250         
+
+[CONTROLS]
+ LINK 9 OPEN IF NODE 2 BELOW 110
+ LINK 9 CLOSED IF NODE 2 ABOVE 140
+
+
+[RULES]
+
+[ENERGY]
+ Global Efficiency  	75
+ Global Price       	0.0
+ Demand Charge      	0.0
+
+[EMITTERS]
+;Junction        	Coefficient
+
+[QUALITY]
+;Node            	InitQual
+ 10              	0.5
+ 11              	0.5
+ 12              	0.5
+ 13              	0.5
+ 21              	0.5
+ 22              	0.5
+ 23              	0.5
+ 31              	0.5
+ 32              	0.5
+ 9               	1.0
+ 2               	1.0
+
+[SOURCES]
+;Node            	Type        	Quality     	Pattern
+
+[REACTIONS]
+;Type     	Pipe/Tank       	Coefficient
+
+
+[REACTIONS]
+ Order Bulk            	1
+ Order Tank            	1
+ Order Wall            	1
+ Global Bulk           	-.5
+ Global Wall           	-1
+ Limiting Potential    	0.0
+ Roughness Correlation 	0.0
+
+[MIXING]
+;Tank            	Model
+
+[TIMES]
+ Duration           	24:00 
+ Hydraulic Timestep 	1:00 
+ Quality Timestep   	0:05 
+ Pattern Timestep   	2:00 
+ Pattern Start      	0:00 
+ Report Timestep    	1:00 
+ Report Start       	0:00 
+ Start ClockTime    	12 am
+ Statistic          	None
+
+[REPORT]
+ Status             	Yes
+ Summary            	No
+ Page               	0
+
+[OPTIONS]
+ Units              	GPM
+ Headloss           	H-W
+ Specific Gravity   	1.0
+ Viscosity          	1.0
+ Trials             	40
+ Accuracy           	0.001
+ CHECKFREQ          	2
+ MAXCHECK           	10
+ DAMPLIMIT          	0
+ Unbalanced         	Continue 10
+ Pattern            	1
+ Demand Multiplier  	1.0
+ Emitter Exponent   	0.5
+ Quality            	Chlorine mg/L
+ Diffusivity        	1.0
+ Tolerance          	0.01
+
+[COORDINATES]
+
+[VERTICES]
+
+[LABELS]
+;X-Coord           Y-Coord          Label & Anchor Node                 
+
+[BACKDROP]           
+
+[END]
