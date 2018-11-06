@@ -27,7 +27,7 @@ Juan Santiago Ramseyer
 
 ### DONATE
   
- <p>If this plugin is useful for you, consider to donate to the author.</p>
+ <p>If this plugin is useful for you, please consider to donate to the author.</p>
  <a href="https://www.paypal.com/cgi-bin/webscr?button=donate&business=G5ERSTGG4U426&item_name=Jorge+Almerio/Qgis+QWater+plugin&quantity=&amount=&currency_code=BRL&shipping=&tax=&notify_url=&cmd=_donations&bn=JavaScriptButton_donate&env=www" target="_blank">
  <img border="0" alt="Donate" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif">
  </a>
