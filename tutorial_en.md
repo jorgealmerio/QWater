@@ -3,18 +3,18 @@
 -	Create a new Qgis project
 -	Adjust the project coordinate system for Sirgas 2000, in the meridian range of the area where the network will be designed (for example for Salvador - EPSG: 31984).
 -	Create shapes for the types of elements that make up the network (using the same project coordinate system):
-  *	Points: Nodes, Reservoirs and pumps (if any).
-  *	From lines: excerpts
+	-	Points: Nodes, Reservoirs and pumps (if any).
+	-	From lines: excerpts
 -	Save the project 
 -	Import the planimetric base to be used 
 -	Relate the created shapes to the Epanet information types (Plugins/ Qwater / Settings>) 
-  *	Junctions = Nodes
-  *	Pipes = Segments
-  *	Reservoirs = Reservoirs
-  *	At this stage take the opportunity to input the initial and final population for the network to be analysed.
-  *	Under the "Pipes" tab insert the relevant pipe properties for the respective pipe diameters and materials
-  *	In the "Calculations Options" tab, set the maximum allowed velocity (default = 5 m/s)
-  *	Click the "Select" button and choose the "template_d-w_lps.inp" calculation configuration Click Plugins / Qwater / Make model and accept all messages 
+	-	Junctions = Nodes
+  	-	Pipes = Segments
+  	-	Reservoirs = Reservoirs
+  	-	At this stage take the opportunity to input the initial and final population for the network to be analysed.
+  	-	Under the "Pipes" tab insert the relevant pipe properties for the respective pipe diameters and materials
+  	-	In the "Calculations Options" tab, set the maximum allowed velocity (default = 5 m/s)
+ 	-	Click the "Select" button and choose the "template_d-w_lps.inp" calculation configuration Click Plugins / Qwater / Make model and accept all messages 
 -	For all shapes, save and exit edit mode 
 -	Click in <Project / Sticky Options> and click on the horseshoe icon.
 
@@ -41,19 +41,19 @@
 -	Enable the layer label to display the "DC_ID" field 
 -	Trace all segments according to the direction of the predicted flow (from upstream to downstream). A snippet consists of a polyline that starts at the upstream node and ends at the downstream node. Note: Right click to finish. Esc key to cancel the current edit. 
 -	Calculate the length of network segments
-  *	Click on the calculator button (abacus).
-  *	Click on "Update an existing field" and select the "LENGTH" field.
-  *	In "Geometry" select the "$ length" function and click OK. Open the table to verify that you have filled in the "LENGTH" field with the length of each excerpt in meters.
-  *	Click the OK button. 
+  	-	Click on the calculator button (abacus).
+ 	-	Click on "Update an existing field" and select the "LENGTH" field.
+ 	-	In "Geometry" select the "$ length" function and click OK. Open the table to verify that you have filled in the "LENGTH" field with the length of each excerpt in meters.
+ 	-	Click the OK button. 
 -	Assign a preliminary diameter to the passages.
-  *	Click on the calculator button (abacus). 
-  *	Click on "Update an existing field" and select the "DIAMETER" field. 
-  *	In the edit area of the calculator enter 100 (internal diameter 100 mm). 
-  *	Click the OK button. Check that you have filled in each section the "DIAMETER" field with the provisional value (equal to 100 mm). 
+	-	Click on the calculator button (abacus). 
+	-	Click on "Update an existing field" and select the "DIAMETER" field. 
+  	-	In the edit area of the calculator enter 100 (internal diameter 100 mm). 
+  	-	Click the OK button. Check that you have filled in each section the "DIAMETER" field with the provisional value (equal to 100 mm). 
 -	Complete roughness information, point loss coefficient and status of the sections. 
-  *	Update the "ROUGHNESS" field (roughness of the tube, depending on the material, for example 0.1 mm) with the calculator. 
-  *	Update the "MINORLOSS" field (if not consider adopting equal to 0) with the calculator 
-  *	Update the field "STATUS" (tube open = 'OPEN' or closed = 'CLOSE') with the calculator. 
+  	-	Update the "ROUGHNESS" field (roughness of the tube, depending on the material, for example 0.1 mm) with the calculator. 
+  	-	Update the "MINORLOSS" field (if not consider adopting equal to 0) with the calculator 
+  	-	Update the field "STATUS" (tube open = 'OPEN' or closed = 'CLOSE') with the calculator. 
 -	Save the shape and exit edit mode.
 
 # Calculating Demand
