@@ -13,51 +13,41 @@
   	-	Reservoirs = Reservoirs
   	-	At this stage take the opportunity to input the initial and final population for the network to be analysed.
   	-	Under the "Pipes" tab insert the relevant pipe properties for the respective pipe diameters and materials
-  	-	In the "Calculations Options" tab, set the maximum allowed velocity (default = 5 m/s)
- 	-	Click the "Select" button and choose the "template_d-w_lps.inp" calculation configuration Click Plugins / Qwater / Make model and accept all messages 
+  	-	In the "Calculations Options" tab, set the maximum allowed velocity (default = 5 m/s) and check Calculate pipe length
+ 	-	Click the "Select" button and choose the "template_d-w_lps.inp" calculation configuration 
+	-	Click Plugins / Qwater / Make model and accept all messages 
 -	For all shapes, save and exit edit mode 
--	Click in <Project / Sticky Options> and click on the horseshoe icon.
+-	Click in <Project / Snapping Options> and click on the magnet icon (to enable snapping).
 
 # Mapping the Network
 
 ## Reservoir
 -	Select the shape of reservoirs and click on the edit button 
 -	Enable the layer label to display the "DC_ID" field 
--	Locate all reservoirs (fixed level) by filling the "HEAD" field with the Terrain Dimension. Open the table to verify that all shells have quota.
--	Change the display of the label to ==> 'Node:' || "DC_ID" || '\ n Quotation =' || "HEAD"
+-	Locate all reservoirs (fixed level) by filling the "HEAD" field with the Water Elevation (Ground Elevation + Reservoir height). Open the table to verify that all reservoirs have values in the HEAD field.
+-	Change the display of the label to ==> 'Node:' || "DC_ID" || '\ n Elevation =' || "HEAD"
 -	Save the shape and exit edit mode
 
 ## Nodes
 -	Select the node shape and click the edit button
 -	Enable the layer label to display the "DC_ID" field
 -	Locate all nodes 
--	Fill in the "ELEVATION" field with the Terrain Quota. Open the table to verify that all nodes have quota. 
--	Change the display of the label to ==> 'Node:' || "DC_ID" || '\ n Quotation =' || "ELEVATION" 
+-	Fill in the "ELEVATION" field with the Terrain Elevation. Open the table to verify that all nodes have values in the ELEVATION field. 
+-	Change the display of the label to ==> 'Node:' || "DC_ID" || '\ n Elevation =' || "ELEVATION" 
 -	Save the shape and exit edit mode
 
 
 ## Segments
 -	Select the segments shapes and click on the edit button
 -	Enable the layer label to display the "DC_ID" field 
--	Trace all segments according to the direction of the predicted flow (from upstream to downstream). A snippet consists of a polyline that starts at the upstream node and ends at the downstream node. Note: Right click to finish. Esc key to cancel the current edit. 
--	Calculate the length of network segments
-  	-	Click on the calculator button (abacus).
- 	-	Click on "Update an existing field" and select the "LENGTH" field.
- 	-	In "Geometry" select the "$ length" function and click OK. Open the table to verify that you have filled in the "LENGTH" field with the length of each excerpt in meters.
- 	-	Click the OK button. 
--	Assign a preliminary diameter to the passages.
-	-	Click on the calculator button (abacus). 
-	-	Click on "Update an existing field" and select the "DIAMETER" field. 
-  	-	In the edit area of the calculator enter 100 (internal diameter 100 mm). 
-  	-	Click the OK button. Check that you have filled in each section the "DIAMETER" field with the provisional value (equal to 100 mm). 
--	Complete roughness information, point loss coefficient and status of the sections. 
-  	-	Update the "ROUGHNESS" field (roughness of the tube, depending on the material, for example 0.1 mm) with the calculator. 
-  	-	Update the "MINORLOSS" field (if not consider adopting equal to 0) with the calculator 
-  	-	Update the field "STATUS" (tube open = 'OPEN' or closed = 'CLOSE') with the calculator. 
+-	Trace all segments according to the direction of the predicted flow (from upstream to downstream). A excerpt consists of a polyline that starts at the upstream node and ends at the downstream node. Note: Right click to finish. Esc key to cancel the current edit. 
+-	Fill in the attributes tables with default values by click <Plugins / Qwater / Fill up Fields>  
 -	Save the shape and exit edit mode.
 
 # Calculating Demand
--	Click <Plugins / Qwater / Calc Flow>. The message "Demand on nodes calculated successfully" should appear. This routine calculates the unit flow from the distributed demand by allocating at each node the product of the unit flow times half the length of the segments connected to the node. 
+-	Click <Plugins / Qwater / Calc Flow>. The message "Demand on nodes calculated successfully" should appear. This routine calculates the unit flow from the distributed demand by allocating at each node the product of the unit flow times half the length of the segments connected to the node.
+-	(Optional) It is also possible to calculate flows based on a Zonal Polygon layer.
+	-	Create a poly
 -	Save the node shape and exit edit mode.
 
 # Preliminary Network Simulation
