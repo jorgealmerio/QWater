@@ -47,16 +47,22 @@
 # Calculating Demand
 -	Click <Plugins / Qwater / Calc Flow>. The message "Demand on nodes calculated successfully" should appear. This routine calculates the unit flow from the distributed demand by allocating at each node the product of the unit flow times half the length of the segments connected to the node.
 -	(Optional) It is also possible to calculate flows based on a Zonal Polygon layer.
-	-	Create a poly
+	-	Create a polygon layer and create one polygon for delimit each hydraulic zone (in this case Zone with a especific demand)
+	-	Save the polygon
+	-	Define it as Hydraulic Zone layer by setting in <Plugins/ Qwater / Settings / Hydraulic Zone layer>
+	-	Run <Plugins / Qwater / Make model> and accept all messages to create the necessary attribute table fields
+	-	Fill each field 'DEMAND' of Hydraulic Zone
+	-	Click <Plugins / Qwater / Calc Flow>
 -	Save the node shape and exit edit mode.
 
 # Preliminary Network Simulation
 -	Click <Plugins / Qwater / Run Epanet Simulation> and wait for the message to be displayed. If the message indicates the occurrence of errors, analyze the error feedback in the "Report" tab. 
 -	If the simulation was successful, save the shapes and exit the edit mode.
 
-# Optimisation of the Network Diameters
+# Optimization of the Network Diameters
 -	Click <Plugins / Qwater / Calculate economics diameter> and confirm the message to replace the values in the "DIAMETER" field.
--	Save shapes and exit edit mode. 
+-	Save shapes and exit edit mode.
+	Note: The used pipe Diameters for optimization are defined in 'Pipe tab' of the Settings Dialog.
 
 ## Network simulation with optimized diameters 
 -	Click <Plugins / Qwater / Run Epanet Simulation> and wait for the message to be displayed. 
@@ -67,8 +73,8 @@
 -	Save the project
 -	Save the project (suggestion previous name plus result, eg: Network_result.qgs).
 -	Click <Plugins / Qwater / Load default Styles>.
--	Analyze the results and fine-tune the reservoir height, diameters of segments.
--	Rosolve the network again (<Plugins / Qwater / Run Epanet Simulation>) 
+-	Analyze the results and fine-tune the reservoir HEAD, diameters of segments.
+-	Run the network simulation again (<Plugins / Qwater / Run Epanet Simulation>) 
 -	Save the shapes and exit edit mode. 
 -	Save the project. 
--	Export the network designed for the dxf format. Adopt a compatible scale.
+-	(Optional) Export the network designed for the dxf format. Adapt a compatible scale.
