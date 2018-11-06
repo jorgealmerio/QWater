@@ -17,13 +17,13 @@
     ◦ Pipes    = Trechos
     ◦ Reservoirs    = Reservatórios
     ◦ Aproveitar para informar a população atendida inicial e final da rede a traçar
-    ◦ A aba “Pipes” está desabilitadas (para versão futura)
+    ◦ Na aba “Pipes” são definidas as características das tubulações utlizadas: DN, Diâmetro, Rugosidade, Pressão de serviço e etc
     ◦ Na aba “Calculations Options”, ajustar a velocidade máxima permitida da rede (por 
-    defeito = 5 m/s)
+    defeito = 5 m/s) marque também a opção de calcular a extensão dos tubos <Calculate pipe lenth>    
     ◦ Clicar no botão “Select” e escolher a configuração de cálculo “template_d-w_lps.inp”
     • Clicar em <Complementos/Qwater/Make epanet> e aceitar todas as mensagens
     • Para todos os shapes, salvar e sair do modo de edição
-    •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone de ferradura.
+    •  Clicar em <Projeto/Opções de Aderência> e clicar no ícone com um imã.
  
  ### Traçando a rede
  
@@ -48,26 +48,7 @@
     • Traçar todos os trechos conforme a direção do fluxo prevista (de montante para jusante). Um
     trecho e composto por uma polilinha que inicia no nó de montante e finaliza no nó de 
     jusante. Observação: Botão direito para finalizar. Tecla Esc para cancelar a edição em curso.
-    • Calcular o comprimento dos trechos da rede.
-    ◦ Clicar no botão da calculadora (ábaco).
-    ◦ Clicar em “Atualiza um campo existente” e selecionar o campo “LENGTH”.
-    ◦ Em “Geometria” selecionar a função “$length” e clicar em OK. Abrir a tabela para 
-    verificar que tenha preenchido o campo “LENGTH” com o comprimento de cada trecho 
-    em metros.
-    ◦ Clicar no botão OK.
-    • Atribuir um diâmetro preliminar aos trechos.
-    ◦ Clicar no botão da calculadora (ábaco).
-    ◦ Clicar em “Atualiza um campo existente” e selecionar o campo “DIAMETER”.
-    ◦ Na área de edição da calculadora digitar 100 (diâmetro interno 100 mm).
-    ◦ Clicar no botão OK. Verificar que tenha preenchido em cada trecho o campo 
-    “DIAMETER” com o valor provisório (igual a 100 mm).
-    • Completar informações de rugosidade, coeficiente de perda pontual e status dos trechos
-    ◦ Atualizar o campo “ROUGHNESS” (rugosidade do tubo, em função do material, por 
-    exemplo 0,1 mm) com a calculadora.
-    ◦ Atualizar o campo “MINORLOSS” (coef de perda pontual, se não for considerar adotar 
-    igual a 0) com a calculadora
-    ◦ Atualizar o campo “STATUS” (tubo aberto = ‘OPEN’ ou fechado = ‘CLOSE’) com a 
-    calculadora.
+    • Preencha os dados das tabelas de atributo com valores padrão de forma automática clicando em <Plugins / Qwater / Fill up Fields>
     • Salvar o shape e sair do modo de edição.
 
 ### Calculando a demanda
@@ -76,6 +57,13 @@
     nós calculada com sucesso”. Esta rotina calcula a vazão unitária a partir da demanda 
     distribuída alocando em cada nó, o produto da vazão unitária vezes a metade da extensão 
     dos trechos conectados ao nó.
+    • (Opcional) Também é possível calcular a vazão utilizando um layer de polígonos como Zonas Hidráulicas:
+        • Crie um layer de polígono e crie um polígono delimitando cada zona hidráulica de interesse (nesse caso, zonas com uma Demanda específica)
+        • Salve o polígono
+        • Defina o layer de polígonos como Zona Hidráulica em <Plugins/ Qwater / Settings / Hydraulic Zone layer>
+        • Rode <Plugins / Qwater / Make model> e aceite as mensagens de confirmação para criar os campos necessários na tabela de atributos
+        • Preencha o campo 'DEMAND' para cada zona hidráulica
+        • Click <Plugins / Qwater / Calc Flow>
     • Salvar o shape de nós e sair do modo de edição.
 
 ### Simulação preliminar da rede
