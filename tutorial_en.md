@@ -51,7 +51,7 @@
 	-	Save the polygon
 	-	Define it as Hydraulic Zone layer by setting in <Plugins/ Qwater / Settings / Hydraulic Zone layer>
 	-	Run <Plugins / Qwater / Make model> and accept all messages to create the necessary attribute table fields
-	-	Fill each field 'DEMAND' of Hydraulic Zone
+	-	Fill in the field 'DEMAND' of each Hydraulic Zone
 	-	Click <Plugins / Qwater / Calc Flow>
 -	Save the node shape and exit edit mode.
 
