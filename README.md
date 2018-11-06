@@ -18,6 +18,16 @@ Juan Santiago Ramseyer
 
 <p class="western">This plugin is subject to the terms of the license <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007 </a>, so any damage or consequences of using the plugin and its results in any way is full responsibility of the end user. the developers shall be exempt from any technical or legal liability inherent in the use with or without inability to use the same, even in the event of any proven failure of the plugin.</p>
 
-## [Quick User Guide/Tutorial in English (translated by Neil Falconer)](tutorial_en.md)
+### USER GUIDES
 
-## [Guia de utilização/Tutorial em Português (por Juan Ramseyer)](tutorial_ptbr.md)
+#### [Quick User Guide/Tutorial in English (translated by Neil Falconer)](tutorial_en.md)
+
+#### [Guia de utilização/Tutorial em Português (por Juan Ramseyer)](tutorial_ptbr.md)
+
+
+### DOAÇÃO
+  
+ <p>If this plugin is useful for you, consider to donate to the author.</p>
+ <a href="https://www.paypal.com/cgi-bin/webscr?button=donate&business=G5ERSTGG4U426&item_name=Jorge+Almerio/Qgis+QWater+plugin&quantity=&amount=&currency_code=BRL&shipping=&tax=&notify_url=&cmd=_donations&bn=JavaScriptButton_donate&env=www" target="_blank">
+ <img border="0" alt="Donate" src="https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif">
+ </a>
