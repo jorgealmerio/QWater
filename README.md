@@ -1,7 +1,7 @@
 # QWater <img src="/images/icon.png" width="50"/> 
 Hydraulic design and analysis of water supply networks (using EPANET)
 
-QWater is a plugin that uses GHydraulics Plugin (embedded) from Steffen Macke. It allows to design and analyze water supply networks using EPANET. It allows to write EPANET INP files as well as running an EPANET simulation from QGIS complete with loading the result data. QWater contains a function to calculate economic diameters based on given flowrates. The functions are accessible from the Quantum GIS plugin menu and toolbars.
+QWater is a plugin that uses GHydraulics Plugin (embedded, no need to install it) from Steffen Macke. It allows to design and analyze water supply networks using EPANET (no need to install it). It allows to write EPANET INP files as well as running an EPANET simulation from QGIS complete with loading the result data. QWater contains a function to calculate economic diameters based on given diameters and maximum friction headloss. The functions are accessible from the Quantum GIS plugin menu and toolbars.
 
 ### AUTHOR
 <p class="western">Plugin under development by Jorge Alm&eacute;rio Sousa Moreira, Civil Engineer.</p>
