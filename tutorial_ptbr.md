@@ -17,7 +17,8 @@
     ◦ Pipes    = Trechos
     ◦ Reservoirs    = Reservatórios
     ◦ Aproveitar para informar a população atendida inicial e final da rede a traçar
-    ◦ Na aba “Pipes” são definidas as características das tubulações utlizadas: DN, Diâmetro, Rugosidade, Pressão de serviço e etc
+    ◦ Na aba “Pipes” são definidas as características das tubulações utlizadas: 
+      DN, Diâmetro, Rugosidade, Pressão de serviço e etc
     ◦ Na aba “Calculations Options”, ajustar a velocidade máxima permitida da rede (por 
     defeito = 5 m/s) marque também a opção de calcular a extensão dos tubos <Calculate pipe lenth>    
     ◦ Clicar no botão “Select” e escolher a configuração de cálculo “template_d-w_lps.inp”
@@ -48,7 +49,8 @@
     • Traçar todos os trechos conforme a direção do fluxo prevista (de montante para jusante). Um
     trecho e composto por uma polilinha que inicia no nó de montante e finaliza no nó de 
     jusante. Observação: Botão direito para finalizar. Tecla Esc para cancelar a edição em curso.
-    • Preencha os dados das tabelas de atributo com valores padrão de forma automática clicando em <Plugins / Qwater / Fill up Fields>
+    • Preencha os dados das tabelas de atributo com valores padrão de forma automática 
+      clicando em <Plugins / Qwater / Fill up Fields>
     • Salvar o shape e sair do modo de edição.
 
 ### Calculando a demanda
@@ -58,7 +60,8 @@
     distribuída alocando em cada nó, o produto da vazão unitária vezes a metade da extensão 
     dos trechos conectados ao nó.
     • (Opcional) Também é possível calcular a vazão utilizando um layer de polígonos como Zonas Hidráulicas:
-        • Crie um layer de polígono e crie um polígono delimitando cada zona hidráulica de interesse (nesse caso, zonas com uma Demanda específica)
+        • Crie um layer de polígono e crie um polígono delimitando cada zona hidráulica de interesse 
+          (nesse caso, zonas com uma Demanda específica)
         • Salve o polígono
         • Defina o layer de polígonos como Zona Hidráulica em <Plugins/ Qwater / Settings / Hydraulic Zone layer>
         • Rode <Plugins / Qwater / Make model> e aceite as mensagens de confirmação para criar os campos necessários na tabela de atributos
