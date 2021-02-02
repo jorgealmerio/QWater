@@ -24,13 +24,22 @@ from builtins import object
 
 # Describe the model structure
 class EpanetModel(object):
-    GIS_SECTIONS = ['JUNCTIONS', 'PIPES', 'RESERVOIRS', 'PUMPS', 'VALVES', 'TANKS']
-    COLUMNS = {'JUNCTIONS': ['DC_ID', 'ELEVATION', 'DEMAND', 'PATTERN','DEMAND_PTO'],
+    GIS_SECTIONS = ['JUNCTIONS', 'PIPES', 'RESERVOIRS', 'ZONES', 'PUMPS', 'VALVES', 'TANKS']
+    COLUMNS = {'JUNCTIONS': ['DC_ID', 'ELEVATION', 'DEMAND', 'PATTERN'],
                'PIPES': ['DC_ID', 'NODE1', 'NODE2', 'LENGTH', 'DIAMETER', 'ROUGHNESS', 'MINORLOSS', 'STATUS'],
                'RESERVOIRS': ['DC_ID', 'HEAD', 'PATTERN'],
+               'ZONES': ['DC_ID', 'DEMAND'],
                'TANKS': ['DC_ID', 'ELEVATION', 'INITIALLEV', 'MINIMUMLEV', 'MAXIMUMLEV', 'DIAMETER', 'MINIMUMVOL', 'VOLUMECURV'],
-               'PUMPS': ['ELEVATION', 'DC_ID', 'PROPERTIES'],
-               'VALVES': ['ELEVATION', 'DC_ID', 'DIAMETER', 'TYPE', 'SETTING', 'MINORLOSS']}
+               'PUMPS': ['DC_ID','ELEVATION', 'PROPERTIES'],
+               'VALVES': ['DC_ID', 'ELEVATION', 'DIAMETER', 'TYPE', 'SETTING', 'MINORLOSS']}
+    #Almerio: Additional columns to be created, but not part of Epanet fields
+    EXTRACOLUMNS = {'JUNCTIONS': ['DEMAND_PTO'],
+                    'PIPES': [],
+                    'RESERVOIRS': [],
+                    'ZONES': [],
+                    'TANKS': [],
+                    'PUMPS': [],
+                    'VALVES': []}
     COORDINATE_SECTIONS = ['JUNCTIONS', 'RESERVOIRS', 'TANKS']
     COORDINATE_DATA_SECTIONS = ['COORDINATES','VERTICES']
     VIRTUAL_LINE_SECTIONS = ['PUMPS','VALVES']

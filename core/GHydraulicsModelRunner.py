@@ -27,6 +27,7 @@ import array
 import platform
 import tempfile
 import os
+import sys
 import subprocess
 
 from .GHydraulicsCommon import *
@@ -146,12 +147,22 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
             self.epanet = 'osx/epanet2d'
         else:
             a = platform.architecture()
+            #Almerio: Fix to detect linux OS
+            if a[1]=='':
+                if sys.platform=='linux':
+                    aLst = list(a)
+                    aLst[1]='ELF'
+                    a = tuple(aLst)
             self.epanet = a[0]+'/'+a[1]+'/epanet2d'
             if 'WindowsPE' == a[1]:
                 self.epanet = self.epanet + '.exe'
-        self.epanet = os.path.dirname(__file__)+'/bin/' + self.epanet
+        if sys.platform=='linux':
+            pluginPath = QgsApplication.qgisSettingsDirPath()+ 'python/plugins/QWater'
+        else:
+            pluginPath = os.path.dirname(__file__)
+        self.epanet = pluginPath +'/bin/' + self.epanet
         if not os.path.isfile(self.epanet):
-            raise GHydraulicsException('Could not determine EPANET executable. Please send an email with information about your platform to sdteffen@gmail.com (or use the bug tracker).')
+            raise GHydraulicsException('Could not determine EPANET executable. Please send an email with information about your platform to jorgealmerio@yahoo.com.br (or use the bug tracker). File:'+ self.epanet)
         try:
             os.chmod(self.epanet, 0o755)
         except:

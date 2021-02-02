@@ -124,10 +124,10 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
                         if -1 == lengthidx:
                             raise GHydraulicsException('ERROR: Failed to locate '+EpanetModel.LENGTH+' field in layer '+name)
                         reproject = (layer.crs().mapUnits() != mapunits)
-                        reprojectgeographic = not layer.crs().geographicFlag()
+                        reprojectgeographic = not layer.crs().isGeographic()
                         if reprojectgeographic:
                             epsg4326 = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-                            reprojectgeographic = QgsCoordinateTransform(layer.crs(), epsg4326)
+                            reprojectgeographic = QgsCoordinateTransform(layer.crs(), epsg4326, QgsProject.instance())
                         utmsrs = False
                         # loop over all features
                         allAttrs = provider.attributeIndexes()
@@ -157,14 +157,14 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
                                                     self.log('Using UTM Zone '+str(utmzone)+sn+' for length calculation')
                                                     utmsrs = QgsCoordinateReferenceSystem()
                                                     utmsrs.createFromProj4(proj4)
-                                                reproject = QgsCoordinateTransform(layer.crs(), utmsrs)
+                                                reproject = QgsCoordinateTransform(layer.crs(), utmsrs, QgsProject.instance())
                                                 previous = False
                                                 for point in line:
                                                     reprojected = reproject.transform(point)
                                                     if previous:
                                                         l = l + sqrt(reprojected.sqrDist(previous))
                                                     previous = reprojected
-                                        if QGis.Feet == mapunits:
+                                        if QgsUnitTypes.DistanceUnit.DistanceFeet == mapunits: #Almerio mudou o Original: QGis.Feet == mapunits:
                                             l = l * 3.2808399
                                 else:
                                     l = geometry.length()
@@ -213,7 +213,7 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
         feature = QgsFeature(self.nodeid)
         self.nodeid = self.nodeid + 1
         provider = self.vjunctions.dataProvider()
-        feature.setGeometry(QgsGeometry.fromPoint(point))
+        feature.setGeometry(QgsGeometry.fromPointXY(point))#Almerio: updated 'fromPoint' to 'fromPointXY'
         self.vcount = self.vcount + 1
         id = self.PREFIX + str(self.vcount)
         ididx = provider.fieldNameIndex(GHydraulicsModel.ID_FIELD)
@@ -252,11 +252,13 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
                     for vfeature in iter:
                         feature = QgsFeature()
                         geometry = QgsGeometry(vfeature.geometry())
-                        if self.ismultipart[layername] and not geometry.convertToMultiType():
+                        #Almerio alterou o Original que era: if self.ismultipart[layername] and not geometry.convertToMultiType():
+                        if geometry.isMultipart() and not geometry.convertToMultiType(): 
                             raise GHydraulicsException('ERROR: convertToMultiType() failed')
                         feature.setGeometry(geometry)
                         feature.initAttributes(1)
-                        feature.setAttribute(ididx, str(self.checker.max))
+                        feature.setFields(layer.fields()) #Almerio added this line because of KeyError below
+                        feature.setAttribute(ididx, str(self.checker.max)) #There was a KeyError HERE
                         if not provider.addFeatures([feature]):
                             raise GHydraulicsException('ERROR: Unable to add feature to layer '+layername)
                         self.log('Added junction '+str(self.checker.max)+' with feature id '+str(self.nodeid)+' ('+str(geometry.asPoint().x())+' ' +str(geometry.asPoint().y())+')')

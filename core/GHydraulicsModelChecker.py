@@ -146,7 +146,9 @@ class GHydraulicsModelChecker(GHydraulicsCommon):
                     if layer.type() == QgsMapLayer.VectorLayer and layer.name() == name:
                         provider = layer.dataProvider()
                         #loop over required fields
-                        for fieldname in EpanetModel.COLUMNS[section]:
+                        #Almerio: Added additional columns to table
+                        allColumns = EpanetModel.COLUMNS[section]+EpanetModel.EXTRACOLUMNS[section]
+                        for fieldname in allColumns:
                             if -1 == provider.fieldNameIndex(fieldname):
                                 if name not in missing:
                                     missing[name] = []

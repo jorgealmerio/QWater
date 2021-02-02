@@ -1,0 +1,8 @@
+SOURCES = ../GHydraulicsInpWriter.py\
+
+TRANSLATIONS= QWater_pt.ts\
+
+
+CODECFORTR= LATIN1
+
+CODECFORSRC = UTF-8

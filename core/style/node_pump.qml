@@ -1,9 +1,9 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis readOnly="0" labelsEnabled="0" simplifyAlgorithm="0" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" minScale="1e+8" maxScale="0" simplifyDrawingHints="0" simplifyMaxScale="1" version="3.0.1-Girona" simplifyDrawingTol="1">
-  <renderer-v2 forceraster="0" type="singleSymbol" enableorderby="0" symbollevels="0">
+<qgis minScale="1e+8" simplifyLocal="1" labelsEnabled="1" simplifyDrawingTol="1" version="3.2.3-Bonn" simplifyAlgorithm="0" readOnly="0" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" maxScale="0" simplifyDrawingHints="0">
+  <renderer-v2 forceraster="0" symbollevels="0" enableorderby="0" type="singleSymbol">
     <symbols>
-      <symbol name="0" clip_to_extent="1" type="marker" alpha="1">
-        <layer locked="0" pass="0" enabled="1" class="SimpleMarker">
+      <symbol name="0" clip_to_extent="1" alpha="1" type="marker">
+        <layer enabled="1" pass="0" locked="0" class="SimpleMarker">
           <prop k="angle" v="0"/>
           <prop k="color" v="255,255,255,255"/>
           <prop k="horizontal_anchor_point" v="1"/>
@@ -30,7 +30,7 @@
             </Option>
           </data_defined_properties>
         </layer>
-        <layer locked="0" pass="0" enabled="1" class="SimpleMarker">
+        <layer enabled="1" pass="0" locked="0" class="SimpleMarker">
           <prop k="angle" v="90"/>
           <prop k="color" v="0,0,0,255"/>
           <prop k="horizontal_anchor_point" v="1"/>
@@ -62,7 +62,28 @@
     <rotation/>
     <sizescale/>
   </renderer-v2>
+  <labeling type="simple">
+    <settings>
+      <text-style fontLetterSpacing="0" fontItalic="0" fontWordSpacing="0" textColor="0,0,0,255" fontCapitals="0" isExpression="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" blendMode="0" previewBkgrdColor="#ffffff" fontSizeUnit="Point" namedStyle="Regular" fontStrikeout="0" textOpacity="1" multilineHeight="1" useSubstitutions="0" fontUnderline="0" fieldName="&quot;DC_ID&quot;  || '\n' ||&#xd;&#xa;'CT=' ||  coalesce( &quot;ELEVATION&quot;,'--') ||  '\n' || &#xd;&#xa;'HMT=' ||  coalesce( format_number(&quot;RESULT_HEA&quot;*(-1), 2),'--')" fontWeight="50" fontFamily="Calibri" fontSize="9">
+        <text-buffer bufferColor="255,255,255,255" bufferSize="1" bufferSizeUnits="MM" bufferNoFill="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferOpacity="1" bufferDraw="1" bufferJoinStyle="128" bufferBlendMode="0"/>
+        <background shapeJoinStyle="64" shapeOpacity="1" shapeSizeX="0" shapeDraw="0" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeFillColor="255,255,255,255" shapeOffsetX="0" shapeSizeUnit="MM" shapeBorderWidthUnit="MM" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBlendMode="0" shapeSizeType="0" shapeSizeY="0" shapeRotationType="0" shapeRotation="0" shapeRadiiY="0" shapeOffsetUnit="MM" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBorderColor="128,128,128,255" shapeBorderWidth="0" shapeSVGFile="" shapeRadiiUnit="MM" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeRadiiX="0" shapeType="0" shapeOffsetY="0"/>
+        <shadow shadowUnder="0" shadowOffsetUnit="MM" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowDraw="0" shadowScale="100" shadowOffsetDist="1" shadowColor="0,0,0,255" shadowRadiusUnit="MM" shadowOffsetGlobal="1" shadowBlendMode="6" shadowOffsetAngle="135" shadowRadiusAlphaOnly="0" shadowRadius="1.5" shadowOpacity="0.7"/>
+        <substitutions/>
+      </text-style>
+      <text-format reverseDirectionSymbol="0" multilineAlign="3" wrapChar="" formatNumbers="0" plussign="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" placeDirectionSymbol="0" decimals="3" addDirectionSymbol="0"/>
+      <placement placementFlags="10" dist="0" distUnits="MM" yOffset="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" repeatDistance="0" quadOffset="4" distMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" placement="6" preserveRotation="1" fitInPolygonOnly="0" repeatDistanceUnits="MM" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" centroidInside="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" priority="5" centroidWhole="0" rotationAngle="0" maxCurvedCharAngleIn="25" offsetType="1" offsetUnits="MM"/>
+      <rendering fontLimitPixelSize="0" displayAll="0" scaleVisibility="0" obstacleType="0" obstacle="1" labelPerPart="0" fontMinPixelSize="3" scaleMax="0" scaleMin="0" minFeatureSize="0" mergeLines="0" maxNumLabels="2000" zIndex="0" limitNumLabels="0" drawLabels="1" obstacleFactor="1" fontMaxPixelSize="10000" upsidedownLabels="0"/>
+      <dd_properties>
+        <Option type="Map">
+          <Option name="name" type="QString" value=""/>
+          <Option name="properties"/>
+          <Option name="type" type="QString" value="collection"/>
+        </Option>
+      </dd_properties>
+    </settings>
+  </labeling>
   <customproperties>
+    <property key="dualview/previewExpressions" value="DC_ID"/>
     <property key="embeddedWidgets/count" value="0"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
@@ -71,11 +92,12 @@
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
   <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-    <DiagramCategory penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" lineSizeType="MM" width="15" sizeType="MM" height="15" minimumSize="0" labelPlacementMethod="XHeight" penColor="#000000" opacity="1" enabled="0" backgroundAlpha="255" diagramOrientation="Up" sizeScale="3x:0,0,0,0,0,0" backgroundColor="#ffffff" maxScaleDenominator="1e+8" scaleBasedVisibility="0" barWidth="5" penAlpha="255" rotationOffset="270" minScaleDenominator="0" scaleDependency="Area">
-      <fontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
+    <DiagramCategory scaleDependency="Area" opacity="1" width="15" penWidth="0" penAlpha="255" maxScaleDenominator="1e+8" labelPlacementMethod="XHeight" diagramOrientation="Up" barWidth="5" sizeScale="3x:0,0,0,0,0,0" lineSizeScale="3x:0,0,0,0,0,0" enabled="0" minScaleDenominator="0" scaleBasedVisibility="0" backgroundColor="#ffffff" sizeType="MM" height="15" minimumSize="0" rotationOffset="270" lineSizeType="MM" backgroundAlpha="255" penColor="#000000">
+      <fontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+      <attribute color="#000000" field="" label=""/>
     </DiagramCategory>
   </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings obstacle="0" linePlacementFlags="18" dist="0" showAll="1" placement="0" zIndex="0" priority="0">
+  <DiagramLayerSettings obstacle="0" linePlacementFlags="18" showAll="1" dist="0" priority="0" zIndex="0" placement="0">
     <properties>
       <Option type="Map">
         <Option name="name" type="QString" value=""/>
@@ -85,7 +107,7 @@
     </properties>
   </DiagramLayerSettings>
   <fieldConfiguration>
-    <field name="DC_ID">
+    <field name="id">
       <editWidget type="TextEdit">
         <config>
           <Option/>
@@ -99,35 +121,14 @@
         </config>
       </editWidget>
     </field>
+    <field name="DC_ID">
+      <editWidget type="TextEdit">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="PROPERTIES">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="RESULT_REA">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="RESULT_FRI">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="RESULT_HEA">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="RESULT_STA">
       <editWidget type="TextEdit">
         <config>
           <Option/>
@@ -148,7 +149,35 @@
         </config>
       </editWidget>
     </field>
+    <field name="RESULT_HEA">
+      <editWidget type="TextEdit">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
     <field name="RESULT_QUA">
+      <editWidget type="TextEdit">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="RESULT_STA">
+      <editWidget type="TextEdit">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="RESULT_REA">
+      <editWidget type="TextEdit">
+        <config>
+          <Option/>
+        </config>
+      </editWidget>
+    </field>
+    <field name="RESULT_FRI">
       <editWidget type="TextEdit">
         <config>
           <Option/>
@@ -157,74 +186,79 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias name="" field="DC_ID" index="0"/>
+    <alias name="" field="id" index="0"/>
     <alias name="" field="ELEVATION" index="1"/>
-    <alias name="" field="PROPERTIES" index="2"/>
-    <alias name="" field="RESULT_REA" index="3"/>
-    <alias name="" field="RESULT_FRI" index="4"/>
-    <alias name="" field="RESULT_HEA" index="5"/>
-    <alias name="" field="RESULT_STA" index="6"/>
-    <alias name="" field="RESULT_FLO" index="7"/>
-    <alias name="" field="RESULT_VEL" index="8"/>
-    <alias name="" field="RESULT_QUA" index="9"/>
+    <alias name="" field="DC_ID" index="2"/>
+    <alias name="" field="PROPERTIES" index="3"/>
+    <alias name="" field="RESULT_FLO" index="4"/>
+    <alias name="" field="RESULT_VEL" index="5"/>
+    <alias name="" field="RESULT_HEA" index="6"/>
+    <alias name="" field="RESULT_QUA" index="7"/>
+    <alias name="" field="RESULT_STA" index="8"/>
+    <alias name="" field="RESULT_REA" index="9"/>
+    <alias name="" field="RESULT_FRI" index="10"/>
   </aliases>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
   <defaults>
-    <default applyOnUpdate="0" field="DC_ID" expression=""/>
-    <default applyOnUpdate="0" field="ELEVATION" expression=""/>
-    <default applyOnUpdate="0" field="PROPERTIES" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_REA" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_FRI" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_HEA" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_STA" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_FLO" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_VEL" expression=""/>
-    <default applyOnUpdate="0" field="RESULT_QUA" expression=""/>
+    <default field="id" applyOnUpdate="0" expression=""/>
+    <default field="ELEVATION" applyOnUpdate="0" expression=""/>
+    <default field="DC_ID" applyOnUpdate="0" expression=""/>
+    <default field="PROPERTIES" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_FLO" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_VEL" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_HEA" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_QUA" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_STA" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_REA" applyOnUpdate="0" expression=""/>
+    <default field="RESULT_FRI" applyOnUpdate="0" expression=""/>
   </defaults>
   <constraints>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="DC_ID" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="ELEVATION" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="PROPERTIES" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_REA" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_FRI" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_HEA" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_STA" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_FLO" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_VEL" notnull_strength="0"/>
-    <constraint exp_strength="0" unique_strength="0" constraints="0" field="RESULT_QUA" notnull_strength="0"/>
+    <constraint constraints="0" field="id" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="ELEVATION" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="DC_ID" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="PROPERTIES" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_FLO" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_VEL" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_HEA" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_QUA" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_STA" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_REA" exp_strength="0" unique_strength="0" notnull_strength="0"/>
+    <constraint constraints="0" field="RESULT_FRI" exp_strength="0" unique_strength="0" notnull_strength="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint exp="" field="DC_ID" desc=""/>
-    <constraint exp="" field="ELEVATION" desc=""/>
-    <constraint exp="" field="PROPERTIES" desc=""/>
-    <constraint exp="" field="RESULT_REA" desc=""/>
-    <constraint exp="" field="RESULT_FRI" desc=""/>
-    <constraint exp="" field="RESULT_HEA" desc=""/>
-    <constraint exp="" field="RESULT_STA" desc=""/>
-    <constraint exp="" field="RESULT_FLO" desc=""/>
-    <constraint exp="" field="RESULT_VEL" desc=""/>
-    <constraint exp="" field="RESULT_QUA" desc=""/>
+    <constraint desc="" exp="" field="id"/>
+    <constraint desc="" exp="" field="ELEVATION"/>
+    <constraint desc="" exp="" field="DC_ID"/>
+    <constraint desc="" exp="" field="PROPERTIES"/>
+    <constraint desc="" exp="" field="RESULT_FLO"/>
+    <constraint desc="" exp="" field="RESULT_VEL"/>
+    <constraint desc="" exp="" field="RESULT_HEA"/>
+    <constraint desc="" exp="" field="RESULT_QUA"/>
+    <constraint desc="" exp="" field="RESULT_STA"/>
+    <constraint desc="" exp="" field="RESULT_REA"/>
+    <constraint desc="" exp="" field="RESULT_FRI"/>
   </constraintExpressions>
   <attributeactions>
     <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
   </attributeactions>
-  <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
+  <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
     <columns>
-      <column name="DC_ID" type="field" hidden="0" width="-1"/>
-      <column name="ELEVATION" type="field" hidden="0" width="-1"/>
-      <column name="PROPERTIES" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_REA" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_FRI" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_HEA" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_STA" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_FLO" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_VEL" type="field" hidden="0" width="-1"/>
-      <column name="RESULT_QUA" type="field" hidden="0" width="-1"/>
-      <column type="actions" hidden="1" width="-1"/>
+      <column name="DC_ID" hidden="0" width="-1" type="field"/>
+      <column name="ELEVATION" hidden="0" width="-1" type="field"/>
+      <column name="PROPERTIES" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_REA" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_FRI" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_HEA" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_STA" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_FLO" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_VEL" hidden="0" width="-1" type="field"/>
+      <column name="RESULT_QUA" hidden="0" width="-1" type="field"/>
+      <column hidden="1" width="-1" type="actions"/>
+      <column name="id" hidden="0" width="-1" type="field"/>
     </columns>
   </attributetableconfig>
-  <editform>C:/Users/jorgealmerio/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/QWater_q3/samples/d-w/lps</editform>
+  <editform tolerant="1"></editform>
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath></editforminitfilepath>
@@ -258,6 +292,7 @@ def my_form_open(dialog, layer, feature):
     <field name="RESULT_REA" editable="1"/>
     <field name="RESULT_STA" editable="1"/>
     <field name="RESULT_VEL" editable="1"/>
+    <field name="id" editable="1"/>
   </editable>
   <labelOnTop>
     <field name="DC_ID" labelOnTop="0"/>
@@ -270,6 +305,7 @@ def my_form_open(dialog, layer, feature):
     <field name="RESULT_REA" labelOnTop="0"/>
     <field name="RESULT_STA" labelOnTop="0"/>
     <field name="RESULT_VEL" labelOnTop="0"/>
+    <field name="id" labelOnTop="0"/>
   </labelOnTop>
   <widgets/>
   <conditionalstyles>

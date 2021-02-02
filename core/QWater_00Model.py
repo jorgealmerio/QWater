@@ -26,24 +26,26 @@ from builtins import object
 from qgis.PyQt.QtCore import *
 
 class QWaterModel(object):
-    # Pipes ['On','DN','Diameter','Roughness','Pressure','Referencia']
-    TUBOS_MAT=[[1,50.,54.6,1.0,60.0,'PVC PBA CL12 JEI'],
-               [1,50.,53.4,1.0,75.0,'PVC PBA CL15 JEI'],
-               [1,50.,51.4,1.0,100.0,'PVC PBA CL20 JEI'],
-               [1,75.,77.2,1.0,60.0,'PVC PBA CL12 JEI'],
-               [1,75.,75.6,1.0,75.0,'PVC PBA CL15 JEI'],
-               [1,75.,72.8,1.0,100.0,'PVC PBA CL20 JEI'],
-               [1,100.,100.0,1.0,60.0,'PVC PBA CL12 JEI'],
-               [1,100.,97.8,1.0,75.0,'PVC PBA CL15 JEI'],
-               [1,100.,94.4,1.0,100.0,'PVC PBA CL20 JEI'],
-               [1,100.,108.4,1.0,100.0,'PVC DEFoFo'],
-               [1,150.,156.4,1.0,100.0,'PVC DEFoFo'],
-               [1,200.,204.2,1.0,100.0,'PVC DEFoFo'],
-               [1,250.,252.0,1.0,100.0,'PVC DEFoFo'],
-               [1,300.,299.8,1.0,100.0,'PVC DEFoFo'],
-               [1,350.,347.6,1.0,100.0,'PVC DEFoFo'],
-               [1,400.,394.6,1.0,100.0,'PVC DEFoFo'],
-               [1,500.,489.4,1.0,100.0,'PVC DEFoFo']]
+    # Pipes ['On','DN','Diameter','Roughness','Pressure','Headloss','Reference']
+    j=8
+    TUBOS_MAT=[['On','DN','Diameter','Roughness','Pressure','Headloss','Reference'],
+               [1,50.,54.6,1.0,60.0,j,'PVC PBA CL12 JEI'],
+               [1,50.,53.4,1.0,75.0,j,'PVC PBA CL15 JEI'],
+               [1,50.,51.4,1.0,100.0,j,'PVC PBA CL20 JEI'],
+               [1,75.,77.2,1.0,60.0,j,'PVC PBA CL12 JEI'],
+               [1,75.,75.6,1.0,75.0,j,'PVC PBA CL15 JEI'],
+               [1,75.,72.8,1.0,100.0,j,'PVC PBA CL20 JEI'],
+               [1,100.,100.0,1.0,60.0,j,'PVC PBA CL12 JEI'],
+               [1,100.,97.8,1.0,75.0,j,'PVC PBA CL15 JEI'],
+               [1,100.,94.4,1.0,100.0,j,'PVC PBA CL20 JEI'],
+               [1,100.,108.4,1.0,100.0,j,'PVC DEFoFo'],
+               [1,150.,156.4,1.0,100.0,j,'PVC DEFoFo'],
+               [1,200.,204.2,1.0,100.0,j,'PVC DEFoFo'],
+               [1,250.,252.0,1.0,100.0,j,'PVC DEFoFo'],
+               [1,300.,299.8,1.0,100.0,j,'PVC DEFoFo'],
+               [1,350.,347.6,1.0,100.0,j,'PVC DEFoFo'],
+               [1,400.,394.6,1.0,100.0,j,'PVC DEFoFo'],
+               [1,500.,489.4,1.0,100.0,j,'PVC DEFoFo']]
     # Parameters and default values
     DATA_DEFS = {'POPINI':'0',
                  'POPFIM':'0',

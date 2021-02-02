@@ -3,6 +3,7 @@
         <file>icons/about_icon.png</file>
         <file>icons/qwater.svg</file>
         <file>icons/00settings.svg</file>
+        <file>icons/01rename.svg</file>
         <file>icons/01vazao.svg</file>
         <file>icons/fields_fill.svg</file>
         <file>icons/folder.svg</file>
@@ -14,9 +15,13 @@
         <file>icons/valve.svg</file>
         <file>icons/add.png</file>
         <file>icons/minus.png</file>
+        <file>icons/copy.png</file>
         <file>icons/export.svg</file>
         <file>icons/run.svg</file>
         <file>icons/makemodel.svg</file>
         <file>icons/style.svg</file>
+        <file>icons/sizing.svg</file>
+        <file>icons/getelevation.svg</file>
+        <file>icons/epanet.svg</file>
     </qresource>
 </RCC>

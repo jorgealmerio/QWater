@@ -44,7 +44,11 @@ from .GHydraulicsModel import *
 # Write EPANET INP file
 class GHydraulicsInpWriter(GHydraulicsCommon):
     TITLE = 'Save EPANET INP file'
-
+    SETTINGS='QWater'
+    '''
+    def tr(self, message):
+        return QCoreApplication.translate('QWater',message)
+    '''
     # Write to the given filename
     def write(self, filename, backdrop):
         self.filename = filename
@@ -60,6 +64,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                 self.inpfile.write(line)
         self.inpfile.close()
         template.close()
+        self.iface.messageBar().pushMessage(self.SETTINGS, filename+QCoreApplication.translate('QWater',' successfully created!'), level=Qgis.Info, duration=4)
 
     # Write the given section to the INP file
     def writeSection(self, section):
@@ -92,7 +97,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
     # Transform coordinates where necessary from layer to canvas crs
     def transformXY(self, x, y):
         if self.crstransform:
-            pnt = self.crstransform.transform(QgsPoint(x,y))
+            pnt = self.crstransform.transform(QgsPointXY(x,y))
             x = pnt.x()
             y = pnt.y()
         return [x,y]
@@ -188,7 +193,10 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                                 continue
                             pipes = pipes + '\n'
                             # vertices
-                            line = geometry.asPolyline()
+                            if geometry.wkbType()==QgsWkbTypes.MultiLineString: #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings
+                                line = geometry.asMultiPolyline()[0] #if is multipart get only first polyline
+                            else:
+                                line = geometry.asPolyline()
                             for p in range(1,len(line)-1):
                                 (x,y) = self.transformXY(line[p].x(), line[p].y())
                                 self.xcoords.append(float(x))
@@ -256,10 +264,14 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                                 minorlossidx = fieldidx
                             if EpanetModel.SETTING == field:
                                 settingidx = fieldidx
-                        fieldIndices.append(fieldidx)
+                            if field.lower() != 'ELEVATION'.lower(): #ignore elevation field for valves
+                                fieldIndices.append(fieldidx)
+                        else:
+                            fieldIndices.append(fieldidx)
                     if EpanetModel.VALVES == section and (-1 == typeidx or -1 == diameteridx or -1 == minorlossidx or -1 == settingidx):
                         raise GHydraulicsException('ERROR: Failed to locate type, diameter, minorloss or status in layer '+name)
                     iter = layer.getFeatures()
+                    elevationidx = provider.fieldNameIndex('ELEVATION')
                     # Loop over all features
                     for feature in iter:
                         geometry = feature.geometry()
@@ -275,31 +287,32 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                             # Leave out the elevation
                             writenode1 = True
                             writenode2 = True
-                            for i in range(1,len(fieldIndices)):
-                                attribute = str(attrs[fieldIndices[i]])
-                                if not sov:
-                                    lines = lines + attribute + ' '
-                                if '' == id:
-                                    id = attribute
-                                    if id in self.pipes[EpanetModel.NODE1] and id in self.pipes[EpanetModel.NODE1][id]:
-                                        writenode2 = False
-                                        virtual_id = self.pipes[EpanetModel.NODE1][id][id]
-                                        self.skippipes[id] = id
-                                    if id in self.pipes[EpanetModel.NODE2] and id in self.pipes[EpanetModel.NODE2][id]:
-                                        writenode1 = False
-                                        id = self.pipes[EpanetModel.NODE2][id][id]
-                                        self.skippipes[id] = id
-                                    if writenode2:
-                                        virtual_id = id + GHydraulicsModel.VIRTUAL_POSTFIX
-                                        self.virtualnodes[id] = virtual_id
+                            for i in range(len(fieldIndices)): #range(1,len(fieldIndices))
+                                if fieldIndices[i] != elevationidx: #Almerio: leave out the elevation
+                                    attribute = str(attrs[fieldIndices[i]])
                                     if not sov:
-                                        lines = lines + id + ' ' + virtual_id + ' '
+                                        lines = lines + attribute + ' '
+                                    if '' == id:
+                                        id = attribute
+                                        if id in self.pipes[EpanetModel.NODE1] and id in self.pipes[EpanetModel.NODE1][id]:
+                                            writenode2 = False
+                                            virtual_id = self.pipes[EpanetModel.NODE1][id][id]
+                                            self.skippipes[id] = id
+                                        if id in self.pipes[EpanetModel.NODE2] and id in self.pipes[EpanetModel.NODE2][id]:
+                                            writenode1 = False
+                                            id = self.pipes[EpanetModel.NODE2][id][id]
+                                            self.skippipes[id] = id
+                                        if writenode2:
+                                            virtual_id = id + GHydraulicsModel.VIRTUAL_POSTFIX
+                                            self.virtualnodes[id] = virtual_id
+                                        if not sov:
+                                            lines = lines + id + ' ' + virtual_id + ' '
                             if not sov:
                                 lines = lines + '\n'
                             # write first point
                             if writenode1:
                                 point = self.getFirstMultiPoint(geometry)
-                                elevation = str(attrs[fieldIndices[0]])
+                                elevation = str(attrs[elevationidx]) or 0 #Almerio fieldIndices[0]
                                 self.addJunction(id, elevation, '0', '', point.x(), point.y())
                             # write the second point
                             # todo calculate length for all cases
@@ -338,7 +351,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                             attrs = feature.attributes()
                             node1 = self.getString(attrs[node1idx])
                             if  node1 == id or node1 == virtual_id:
-                                if geometry.wkbType()==QgsWkbTypes.MultiLineString:#Almerio: Adicionei esse "if" para resolver MultiLineStrings
+                                if geometry.wkbType()==QgsWkbTypes.MultiLineString: #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings
                                     g=geometry.asMultiPolyline()
                                     s=g[0][0]
                                     e=g[-1][-1]
@@ -370,7 +383,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
 
     # Write a section label to the INP file
     def writeSectionLabel(self, section):
-        self.inpfile.write('['+section+'] ; created by GHydraulics\n')
+        self.inpfile.write('['+section+'] ; created by QWater\n')
 
     # Write out the backdrop section
     def writeBackdropSection(self):

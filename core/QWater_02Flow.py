@@ -28,6 +28,7 @@ from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtCore import *
 from qgis.utils import *
 import os.path
+import processing
 from .QWater_00Common import *
 #        from qgis.gui import QgsMessageBar
 
@@ -35,77 +36,162 @@ class QWater_02Flow(object):
     # Store all configuration data under this key
     common=QWater_00Common()
     SETTINGS = common.SETTINGS
+    progress = None
+    progressMBar = None
+    cont = 0
+    nroNos = 0
+    NoDemNodes=[]#self.ListNoDemandNodes()
+    LstNetwork=[]#self.ListNetwork()
+    SrcNodes = []#self.ListSourcesNodes()
+    interPipes = []#Pipes that connects Hydraulic Zones (Crossed by Zone boundaries)
+    fieldDemPto_idx= None
     def CalcFlow(self):
         '''MsgTxt=self.tr(u'Calc Vazao!')
         QMessageBox.information(None,self.SETTINGS,MsgTxt)'''
         proj = QgsProject.instance()
         PipesVar=proj.readEntry(self.SETTINGS, 'PIPES')[0]
         NodesVar=proj.readEntry(self.SETTINGS, 'JUNCTIONS')[0]
+        
         if PipesVar!='' and NodesVar!='':
             PipesLayer=proj.mapLayersByName(PipesVar)[0]
             NodesLayer=proj.mapLayersByName(NodesVar)[0]
-            tot,geo=self.common.CompRealGeom(PipesLayer)
-            popfim=float(proj.readEntry(self.SETTINGS, 'POPFIM')[0])
-            perCapt=float(proj.readEntry(self.SETTINGS, 'PERCAPTA')[0])
-            k1=float(proj.readEntry(self.SETTINGS, 'K1_DIA')[0])
-            k2=float(proj.readEntry(self.SETTINGS, 'K2_HORA')[0])
-            coefAtend=float(proj.readEntry(self.SETTINGS, 'COEF_ATEND')[0])
-            Qfim=popfim*perCapt*k1*k2*coefAtend/86400
-
-            #Vazao unitaria
-            qUnit=Qfim/tot
-            QgsMessageLog.logMessage('qUnit={:f}'.format(qUnit), self.SETTINGS)
-            NodesLayer.startEditing()
-            nroNos=NodesLayer.featureCount()
-            progress,progressMBar=self.common.startProgressBar('Starting Flow calcution...')
-            cont=0
-            NoDemNodes=self.ListNoDemandNodes()
-            LstNetwork=self.ListNetwork()
-            SrcNodes = self.ListSourcesNodes()
-            fieldDemPto_idx = NodesLayer.fields().lookupField('DEMAND_PTO')
-            for node in NodesLayer.getFeatures():
-                cont+=1
-                percent = (cont/float(nroNos)) * 100
-                progress.setValue(percent)
-                dc_id=node['DC_ID']
-                progressMBar.setText('Calculating Demand for Junction '+dc_id)
-
-                #Filtro para pegar os tubos que chegam no noh (NODE2=dc_id)
-                UpNodes=self.GetUpStreamNodes(dc_id,NoDemNodes,LstNetwork)
-                UpNodes.append(dc_id) #Acrescenta o proprio no
-                filterUp='"NODE2" in (\''+"\',\'".join(UpNodes)+'\')'
-                
-                #Filtro para pegar os tubos que saem do noh (NODE1=dc_id)
-                DownNodes=self.GetDownStreamNodes(dc_id,NoDemNodes,LstNetwork)
-                DownNodes.append(dc_id) #Acrescenta o proprio no
-                filterDown='"NODE1" in (\''+"\',\'".join(DownNodes)+'\')'
-
-                filter=filterUp + " or "+ filterDown
-
-                request = QgsFeatureRequest()
-                request.setFilterExpression(filter)# '"NODE2" =\''+dc_id+'\'' 
-                iterator=PipesLayer.getFeatures( request )
-                ext=0
-                for tubo in iterator:
-                    #if pipe node1 is very upstream node adds full length
-                    if tubo['NODE1'] in SrcNodes:
-                        ext+=tubo['LENGTH']
-                    else:
-                        ext+=tubo['LENGTH']/2.
-                #print 'ext=',ext,"qUnit",qUnit
-                #Gets Point Demand from field and adds
-                if fieldDemPto_idx>=0:
-                    DemPto = node['DEMAND_PTO'] or 0  # if Field has null replace with zero
-                else:
-                    DemPto = 0
-                node['DEMAND']=ext*qUnit+DemPto
-                NodesLayer.updateFeature(node)
+            ZonesVar=proj.readEntry(self.SETTINGS, 'ZONES')[0]
+            
+            self.NoDemNodes=self.ListNoDemandNodes()
+            self.LstNetwork=self.ListNetwork()
+            self.SrcNodes = self.ListSourcesNodes()
+            self.fieldDemPto_idx = NodesLayer.fields().lookupField('DEMAND_PTO')
+            self.nroNos=NodesLayer.featureCount()
+            self.cont = 0
+            #if Zones layer is undefined calculate using global population settings
+            if ZonesVar=='':
+                self.progress, self.progressMBar=self.common.startProgressBar('Starting Flow calcution...')
+                self.interPipes = []
+                popfim=float(proj.readEntry(self.SETTINGS, 'POPFIM')[0])
+                perCapt=float(proj.readEntry(self.SETTINGS, 'PERCAPTA')[0])
+                k1=float(proj.readEntry(self.SETTINGS, 'K1_DIA')[0])
+                k2=float(proj.readEntry(self.SETTINGS, 'K2_HORA')[0])
+                coefAtend=float(proj.readEntry(self.SETTINGS, 'COEF_ATEND')[0])
+                tot=self.CalcExt(PipesLayer.getFeatures())
+                Qfim=popfim*perCapt*k1*k2*coefAtend/86400
+                NodesLayer.startEditing()
+                self.CalcFlowSub(Qfim, PipesLayer, NodesLayer, PipesLayer.getFeatures(), NodesLayer.getFeatures())
+            else: # if Zones layer is defined calculate using Polygon Zones Demands               
+                ZonesLayer=proj.mapLayersByName(ZonesVar)[0]
+                self.progress, self.progressMBar=self.common.startProgressBar('Starting Flow calcution by Zones...')
+                self.interPipes = self.ListInterPipes(PipesLayer, ZonesLayer)
+                NodesLayer.startEditing()
+                for zona in ZonesLayer.getFeatures():                    
+                    ZonesLayer.selectByIds([zona.id()])
+                    self.selectByLocation(NodesLayer,QgsProcessingFeatureSourceDefinition(ZonesLayer.id(),True),6)#6:within
+                    #self.selectByLocation(PipesLayer,QgsProcessingFeatureSourceDefinition(NodesLayer.id(),True),4)#4:touch
+                    pipesSel = self.selectByExpression(PipesLayer,NodesLayer.getSelectedFeatures())                    
+                    QZone=zona['DEMAND'] or 0
+                    Zone=zona['DC_ID'] or ''
+                    self.CalcFlowSub(QZone, PipesLayer, NodesLayer, pipesSel, NodesLayer.getSelectedFeatures(),Zone)#PipesLayer.getSelectedFeatures()
+                ZonesLayer.removeSelection()
+            PipesLayer.removeSelection()
+            NodesLayer.removeSelection()
             iface.messageBar().clearWidgets()
-            iface.messageBar().pushMessage(self.SETTINGS, QCoreApplication.translate('QWater',u'Node flow sucessfully calculated!'),
-                                           level=Qgis.Info, duration=0)
+            msgTxt = QCoreApplication.translate('QWater','Flow sucessfully calculated at {} de {} Nodes!'.format(self.cont,self.nroNos))
+            if self.cont < self.nroNos:
+                msgTxt += QCoreApplication.translate('QWater',' Hydraulic Zones does not contain all nodes!')                
+            iface.messageBar().pushMessage(self.SETTINGS, msgTxt, level=Qgis.Info, duration=0)
         else:
             self.warning('Pipes or Junctions Layers undefined!')
+            
+ 
+    #Subroutina para calculo da vazao
+    def CalcFlowSub(self, QZone, PipesLayer, NodesLayer, PipesIter, NodesIter, Zone=''):
+        tot=self.CalcExt(PipesIter)            
+        #Vazao unitaria
+        qUnit=QZone/tot
+        logTxt = 'qUnit={:f}' 
+        if Zone!='':
+            logTxt+= ' (Zone {})'.format(Zone) 
+        QgsMessageLog.logMessage(logTxt.format(qUnit), self.SETTINGS, Qgis.Info)        
+        for node in NodesIter:
+            self.cont+=1
+            percent = (self.cont/float(self.nroNos)) * 100
+            self.progress.setValue(percent)
+            dc_id=node['DC_ID']
+            txtZone = '' if Zone=='' else 'Zone: '+Zone
+            self.progressMBar.setText(txtZone +' calculating Demand for Junction '+dc_id)
 
+            #Filtro para pegar os tubos que chegam no noh (NODE2=dc_id)
+            UpNodes=self.GetUpStreamNodes(dc_id,self.NoDemNodes,self.LstNetwork)
+            UpNodes.append(dc_id) #Acrescenta o proprio no
+            filterUp='"NODE2" in (\''+"\',\'".join(UpNodes)+'\')'
+            
+            #Filtro para pegar os tubos que saem do noh (NODE1=dc_id)
+            DownNodes=self.GetDownStreamNodes(dc_id,self.NoDemNodes,self.LstNetwork)
+            DownNodes.append(dc_id) #Acrescenta o proprio no
+            filterDown='"NODE1" in (\''+"\',\'".join(DownNodes)+'\')'
+
+            filter=filterUp + " or "+ filterDown
+
+            request = QgsFeatureRequest()
+            request.setFilterExpression(filter)# '"NODE2" =\''+dc_id+'\'' 
+            iterator=PipesLayer.getFeatures( request )
+            ext=0
+            for tubo in iterator:
+                #if pipe node1 is very upstream node adds full length
+                if tubo['NODE1'] in self.SrcNodes:
+                    ext+=tubo['LENGTH']
+                else:
+                    ext+=tubo['LENGTH']/2.
+            #print 'ext=',ext,"qUnit",qUnit
+            #Gets Point Demand from field and adds
+            if self.fieldDemPto_idx>=0:
+                DemPto = node['DEMAND_PTO'] or 0  # if Field has null replace with zero
+            else:
+                DemPto = 0
+            node['DEMAND']=ext*qUnit+DemPto
+            NodesLayer.updateFeature(node)   
+    def selectByLocation(self, srcLayer, intLayer, Predicate=6):
+        myresult = processing.run("native:selectbylocation", 
+            {'INPUT': srcLayer, 
+            'PREDICATE':Predicate, # 4:touch ; 6:are within; 7:cross
+            'INTERSECT': intLayer, #for only selected feature use QgsProcessingFeatureSourceDefinition(intLayer,True)
+            'METHOD':0}) #0: creating new selection
+        return myresult['OUTPUT']
+    
+    #Retorna um Iterator
+    def selectByExpression(self, PipesLayer, nodeIterator):
+        lstNodes=[f['DC_ID'] for f in nodeIterator]
+        
+        #Filtro para pegar os tubos que chegam no noh (NODE2=dc_id)
+        filterUp='"NODE2" in (\''+"\',\'".join(lstNodes)+'\')'
+        
+        #Filtro para pegar os tubos que saem do noh (NODE1=dc_id)
+        filterDown='"NODE1" in (\''+"\',\'".join(lstNodes)+'\')'
+
+
+        filter=filterUp + " or "+ filterDown
+
+        request = QgsFeatureRequest()
+        request.setFilterExpression(filter)# '"NODE2" =\''+dc_id+'\'' 
+        iterator=PipesLayer.getFeatures( request )
+        return iterator
+        #ids = [i.id() for i in iterator]
+        #PipesLayer.selectByIds(ids)
+        
+    def CalcExt(self,Iterator):
+        totAcum=0
+        for feat in Iterator:
+            ext=feat['LENGTH']
+            if ext!= NULL:
+                if feat.id() in self.interPipes:
+                    totAcum+=ext/2
+                else:
+                    totAcum+=ext
+        return totAcum
+    def ListInterPipes(self, pipesLyr, ZoneLyr):
+        result=[]
+        self.selectByLocation(pipesLyr, ZoneLyr, 7)
+        for pipe in pipesLyr.getSelectedFeatures():
+            result.append(pipe.id())
+        return result
     def testeVazao(self):
         #QInputDialog.getText(qid, title, label, mode, default)
         text, ok = QInputDialog.getText(QInputDialog(), 'testeVazao', "No:", QLineEdit.Normal, "20")
@@ -147,7 +233,9 @@ class QWater_02Flow(object):
                 for node in NodesLayer.getFeatures():
                     result.append(node['DC_ID'])
         return result
-    def ListSourcesNodes(self): #List Reservoirs or tanks of very upstream Nodes (Sources)
+
+    #List Reservoirs or tanks of very upstream Nodes (Sources)
+    def ListSourcesNodes(self):
         proj = QgsProject.instance()
         ResTypes = ['RESERVOIRS', 'TANKS']
         result=reservs=[]
