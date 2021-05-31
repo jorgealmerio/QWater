@@ -24,6 +24,9 @@ Juan Santiago Ramseyer
 
 #### [Guia de utilização/Tutorial em Português (por Juan Ramseyer)](tutorial_ptbr.md)
 
+### OTHER DOCS
+
+#### [Microsoft Power Point presentation in Spanish](Docs/Presentacion_QWater.pptx)
 
 ### DONATE
   
