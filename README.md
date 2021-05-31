@@ -26,7 +26,7 @@ Juan Santiago Ramseyer
 
 ### OTHER DOCS
 
-#### [Microsoft Power Point presentation in Spanish](Docs/Presentacion_QWater.pptx)
+#### [Microsoft Power Point presentation in Spanish (By Eng. Carlos Alberto Moreno](Docs/Presentacion_QWater.pptx)
 
 ### DONATE
   
