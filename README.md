@@ -28,6 +28,7 @@ Juan Santiago Ramseyer
 
 #### [Microsoft Power Point presentation in Spanish (By Eng. Carlos Alberto Moreno)](Docs/Presentacion_QWater.pptx)
 #### [DC Water Design Extension Manual (by Steffen Macke)](http://epanet.de/dcwaterdesign/manual.html)
+#### [Epanet 2.2 Online Manual (by EPA - Environmental Protection Agency)](https://epanet22.readthedocs.io/en/latest/)
 
 ### DONATE
   
