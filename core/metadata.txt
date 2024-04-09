@@ -5,13 +5,15 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Hydraulic design and analysis of water supply networks
 category=Plugins
-version=3.1.8
+version=3.1.9
 author=Jorge Almerio
 email=jorgealmerio@yahoo.com.br
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+    3.1.9 - 2024/04/07
+        - Bug fix: QgsVectorLayer.selectByRect(): argument 2 has unexpected type 'bool'
     3.1.8 - 2020/04/09
         - Bug fix: Coordinate transform error with QgsPoint (changed to QgsPointXY)
     3.1.7 - 2019/04/03

@@ -132,7 +132,7 @@ class Rename_Tools(object):
                                   pt.y() - width,
                                 pt.x() + width,
                                 pt.y() + width)
-        layer.selectByRect(rect,True)
+        layer.selectByRect(rect)
         selected_features = layer.selectedFeatures()
         if layer.selectedFeatureCount()>1:
             QMessageBox.warning(None, 'QWater','More than one feature selected!\n')
