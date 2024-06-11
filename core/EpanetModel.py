@@ -24,7 +24,7 @@ from builtins import object
 
 # Describe the model structure
 class EpanetModel(object):
-    GIS_SECTIONS = ['JUNCTIONS', 'PIPES', 'RESERVOIRS', 'ZONES', 'PUMPS', 'VALVES', 'TANKS']
+    GIS_SECTIONS = ['JUNCTIONS', 'PIPES', 'RESERVOIRS', 'ZONES', 'PUMPS', 'VALVES', 'TANKS', 'DEM']
     COLUMNS = {'JUNCTIONS': ['DC_ID', 'ELEVATION', 'DEMAND', 'PATTERN'],
                'PIPES': ['DC_ID', 'NODE1', 'NODE2', 'LENGTH', 'DIAMETER', 'ROUGHNESS', 'MINORLOSS', 'STATUS'],
                'RESERVOIRS': ['DC_ID', 'HEAD', 'PATTERN'],
@@ -38,7 +38,7 @@ class EpanetModel(object):
                     'RESERVOIRS': [],
                     'ZONES': [],
                     'TANKS': [],
-                    'PUMPS': [],
+                    'PUMPS': ['RES_HEA_UP','RES_HEA_DN'],
                     'VALVES': []}
     COORDINATE_SECTIONS = ['JUNCTIONS', 'RESERVOIRS', 'TANKS']
     COORDINATE_DATA_SECTIONS = ['COORDINATES','VERTICES']

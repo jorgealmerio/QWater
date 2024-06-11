@@ -5,14 +5,42 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Hydraulic design and analysis of water supply networks
 category=Plugins
-version=3.1.9
+version=3.3.0
 author=Jorge Almerio
 email=jorgealmerio@yahoo.com.br
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-    3.1.9 - 2024/04/07
+	3.3.0 - Bug and Improvements
+		2024/05/22 - On flows calculation display warning when any Zone Demand has no Junction
+		2024/05/21 - Static head calculation and automatic plot to profile view
+		2024/05/20 - Started translation to Portuguese
+		2024/05/15 - Added DEM Parameter to QWater settings dialog and automatic plot to profile view
+		2024/05/14 - Fix Bug in profile tool not showing X,Y value labels
+		2024/05/13 - Fix Bug with multipart elements in getSecondVirtualLineJunction() function
+		2024/05/08 - Added DXF Export tool
+		2024/05/07 - Load Default Styles tool now adds multiple layer styles 
+		2024/05/06 - Added Tool for automatic add Fittings on Junctions (New Fields: 'FITTING', 'FITT_ROT')
+		2024/01/23 - Added option to paste Curve data from (Excel) clipboard to Curves Editor Dialog
+		2024/01/22 - Fix import Pump Curves error
+		2023/10/06 - Added button to Pump Curves dialog for attach Curves to Pumps
+		2023/10/06 - Added Option to create/edit Pump Curves (used QEpanet plugin embedded (https://gitlab.com/albertodeluca/qepanet))
+		2023/10/02 - Improved profile view to show Pump Head (upstream and downstream from pump)
+		2023/10/02 - Improved profile view to allow click on any Node type layer not only JUNCTIONS(RESERVOIRS, TANKS, PUMPS, VALVES)
+		2023/09/28 - Fix flow calculation error on some circunstances
+		2023/09/20 - Get elevation from raster (DEM from now) improvements: can work with meshes too and apply for multiple layers at once
+		2023/09/25 - Fix "QgsVectorLayer.selectByRect(): argument 2 has unexpected type 'bool'" (QWater_01Rename.py, line 135)
+		2018/07/12 - Fix "MultiLineStringZ geometry cannot be converted to a polyline. Only single line or curve types are permitted." (GHydraulicsInpWriter.py, line 200)
+    3.2.0 - 2021/09/16
+        - Adapted and embedded Profile Tool developed by Borys Jurgiel, Patrice Verchere, Etienne Tourigny, Javier Becerra
+        - Updated to use Epanet 2.2 version on windows (Now it is possible to choose Pressure Driven analysis-PDA instead of Demand Driven analysis-DDA)
+        - Change color of result dialog if there are warnings (light yellow) or errors (light red)
+        - Reordered tool buttons
+        - Changed pipe style (added arrows)
+        - Removed field maximum speed (m/s) because it is obsolote. Maximum Speed is calculated based on Pipes data (Headloss)
+        - Supplied a Hydraulic zone sample file and added to the sample Darcy-Weisbach Qgis project
+    3.1.9 - 2021/02/04
         - Bug fix: QgsVectorLayer.selectByRect(): argument 2 has unexpected type 'bool'
     3.1.8 - 2020/04/09
         - Bug fix: Coordinate transform error with QgsPoint (changed to QgsPointXY)

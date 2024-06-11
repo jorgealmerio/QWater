@@ -61,7 +61,9 @@ class GHydraulicsModel(object):
         'SETTING': QVariant.String,
         'STATUS': QVariant.String,
         'TYPE': QVariant.String,
-        'VOLUMECURV': QVariant.String
+        'VOLUMECURV': QVariant.String,
+        'RES_HEA_UP': QVariant.Double, #Almerio: adicionei esse campo para guardar a piezometrica a montante das bombas
+        'RES_HEA_DN': QVariant.Double #Almerio: adicionei esse campo para guardar a piezometrica a jusante das bombas
         }
     # Node Input data column names by Almerio 
     NODE_INPUT = ['DEMAND_PTO']

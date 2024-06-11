@@ -31,7 +31,7 @@ import os.path
 import processing
 from .QWater_00Common import *
 #        from qgis.gui import QgsMessageBar
-
+ClassName='QWater_02Flow'
 class QWater_02Flow(object):
     # Store all configuration data under this key
     common=QWater_00Common()
@@ -45,6 +45,9 @@ class QWater_02Flow(object):
     SrcNodes = []#self.ListSourcesNodes()
     interPipes = []#Pipes that connects Hydraulic Zones (Crossed by Zone boundaries)
     fieldDemPto_idx= None
+    
+    def tr(self, Texto):
+        return QCoreApplication.translate(ClassName,Texto)
     def CalcFlow(self):
         '''MsgTxt=self.tr(u'Calc Vazao!')
         QMessageBox.information(None,self.SETTINGS,MsgTxt)'''
@@ -65,7 +68,7 @@ class QWater_02Flow(object):
             self.cont = 0
             #if Zones layer is undefined calculate using global population settings
             if ZonesVar=='':
-                self.progress, self.progressMBar=self.common.startProgressBar('Starting Flow calcution...')
+                self.progress, self.progressMBar=self.common.startProgressBar(self.tr('Starting Flow calcution...'))
                 self.interPipes = []
                 popfim=float(proj.readEntry(self.SETTINGS, 'POPFIM')[0])
                 perCapt=float(proj.readEntry(self.SETTINGS, 'PERCAPTA')[0])
@@ -75,10 +78,13 @@ class QWater_02Flow(object):
                 tot=self.CalcExt(PipesLayer.getFeatures())
                 Qfim=popfim*perCapt*k1*k2*coefAtend/86400
                 NodesLayer.startEditing()
-                self.CalcFlowSub(Qfim, PipesLayer, NodesLayer, PipesLayer.getFeatures(), NodesLayer.getFeatures())
+                self.CalcFlowSub(Qfim, PipesLayer, NodesLayer, PipesLayer.getFeatures(), list(NodesLayer.getFeatures()))
+                iface.messageBar().clearWidgets()
+                msgTxt = self.tr('Flow sucessfully calculated at {} of {} Nodes!').format(self.cont,self.nroNos)
+                self.warning(msgTxt, level=Qgis.Info)  
             else: # if Zones layer is defined calculate using Polygon Zones Demands               
                 ZonesLayer=proj.mapLayersByName(ZonesVar)[0]
-                self.progress, self.progressMBar=self.common.startProgressBar('Starting Flow calcution by Zones...')
+                self.progress, self.progressMBar=self.common.startProgressBar(self.tr('Starting Flow calcution by Zones...'))
                 self.interPipes = self.ListInterPipes(PipesLayer, ZonesLayer)
                 NodesLayer.startEditing()
                 for zona in ZonesLayer.getFeatures():                    
@@ -88,35 +94,42 @@ class QWater_02Flow(object):
                     pipesSel = self.selectByExpression(PipesLayer,NodesLayer.getSelectedFeatures())                    
                     QZone=zona['DEMAND'] or 0
                     Zone=zona['DC_ID'] or ''
-                    self.CalcFlowSub(QZone, PipesLayer, NodesLayer, pipesSel, NodesLayer.getSelectedFeatures(),Zone)#PipesLayer.getSelectedFeatures()
+                    nodesIter = list(NodesLayer.getSelectedFeatures())
+                    self.CalcFlowSub(QZone, PipesLayer, NodesLayer, pipesSel, nodesIter, Zone)#PipesLayer.getSelectedFeatures()
                 ZonesLayer.removeSelection()
+                iface.messageBar().clearWidgets()
+                ZonesDemTot = ZonesLayer.aggregate(QgsAggregateCalculator.Sum, "DEMAND")[0]
+                NodesDemTot = NodesLayer.aggregate(QgsAggregateCalculator.Sum, "DEMAND")[0]
+                if self.cont < self.nroNos: 
+                    msgTxt = self.tr(' Hydraulic Zones does not contain all nodes!')
+                    self.warning(msgTxt, duration=0)            
+                elif ZonesDemTot - NodesDemTot > 0.001:
+                    msgTxt = self.tr('Zones Demand Sum greater than Junctions Demand Sum. Maybe there is Zones without any Junctions!')
+                    self.warning(msgTxt, duration=0)
+                elif NodesDemTot - ZonesDemTot > 0.001: #Should never happen
+                    msgTxt = self.tr('Zones Demand Sum is less than Junctions Demand Sum. Check your Zones and Junctions!')
+                    self.warning(msgTxt, duration=0)
+                else:
+                    msgTxt = self.tr('Flow sucessfully calculated at {} of {} Nodes!').format(self.cont,self.nroNos)
+                    self.warning(msgTxt, level=Qgis.Info)
+                #if end
             PipesLayer.removeSelection()
-            NodesLayer.removeSelection()
-            iface.messageBar().clearWidgets()
-            msgTxt = QCoreApplication.translate('QWater','Flow sucessfully calculated at {} de {} Nodes!'.format(self.cont,self.nroNos))
-            if self.cont < self.nroNos:
-                msgTxt += QCoreApplication.translate('QWater',' Hydraulic Zones does not contain all nodes!')                
-            iface.messageBar().pushMessage(self.SETTINGS, msgTxt, level=Qgis.Info, duration=0)
+            NodesLayer.removeSelection()                      
         else:
-            self.warning('Pipes or Junctions Layers undefined!')
+            self.warning(self.tr('Pipes or Junctions Layers undefined!'))
             
  
     #Subroutina para calculo da vazao
     def CalcFlowSub(self, QZone, PipesLayer, NodesLayer, PipesIter, NodesIter, Zone=''):
-        tot=self.CalcExt(PipesIter)            
-        #Vazao unitaria
-        qUnit=QZone/tot
-        logTxt = 'qUnit={:f}' 
-        if Zone!='':
-            logTxt+= ' (Zone {})'.format(Zone) 
-        QgsMessageLog.logMessage(logTxt.format(qUnit), self.SETTINGS, Qgis.Info)        
+        tot=0
+        NodesExts=[] #List with Pipe Extensions relative of each Junction
         for node in NodesIter:
             self.cont+=1
-            percent = (self.cont/float(self.nroNos)) * 100
+            percent = int((self.cont/float(self.nroNos)) * 100)
             self.progress.setValue(percent)
             dc_id=node['DC_ID']
             txtZone = '' if Zone=='' else 'Zone: '+Zone
-            self.progressMBar.setText(txtZone +' calculating Demand for Junction '+dc_id)
+            self.progressMBar.setText(txtZone +self.tr(' calculating Demand for Junction ')+dc_id)
 
             #Filtro para pegar os tubos que chegam no noh (NODE2=dc_id)
             UpNodes=self.GetUpStreamNodes(dc_id,self.NoDemNodes,self.LstNetwork)
@@ -140,14 +153,28 @@ class QWater_02Flow(object):
                     ext+=tubo['LENGTH']
                 else:
                     ext+=tubo['LENGTH']/2.
-            #print 'ext=',ext,"qUnit",qUnit
+            NodesExts.append(ext)
+            tot+= ext
+            #print('NodeID=',dc_id,'ext=',ext,"qUnit",qUnit)
+        
+        #Vazao unitaria
+        qUnit=QZone/tot if tot!=0 else 0 #19/01/2024: to avoid division by zero
+        logTxt = 'qUnit={:f}; L={:.2f}' 
+        if Zone!='':
+            logTxt+= ' (Zone {})'.format(Zone) 
+        QgsMessageLog.logMessage(logTxt.format(qUnit,tot), self.SETTINGS, Qgis.Info)
+        
+        #faz loop novamente para gravar as demandas
+        i=0
+        for node in NodesIter:            
             #Gets Point Demand from field and adds
             if self.fieldDemPto_idx>=0:
                 DemPto = node['DEMAND_PTO'] or 0  # if Field has null replace with zero
             else:
                 DemPto = 0
-            node['DEMAND']=ext*qUnit+DemPto
-            NodesLayer.updateFeature(node)   
+            node['DEMAND']=NodesExts[i]*qUnit+DemPto
+            NodesLayer.updateFeature(node)
+            i+=1
     def selectByLocation(self, srcLayer, intLayer, Predicate=6):
         myresult = processing.run("native:selectbylocation", 
             {'INPUT': srcLayer, 
@@ -156,7 +183,7 @@ class QWater_02Flow(object):
             'METHOD':0}) #0: creating new selection
         return myresult['OUTPUT']
     
-    #Retorna um Iterator
+    #Retorna uma List
     def selectByExpression(self, PipesLayer, nodeIterator):
         lstNodes=[f['DC_ID'] for f in nodeIterator]
         
@@ -167,11 +194,11 @@ class QWater_02Flow(object):
         filterDown='"NODE1" in (\''+"\',\'".join(lstNodes)+'\')'
 
 
-        filter=filterUp + " or "+ filterDown
+        filter=filterUp #+ " or "+ filterDown
 
         request = QgsFeatureRequest()
         request.setFilterExpression(filter)# '"NODE2" =\''+dc_id+'\'' 
-        iterator=PipesLayer.getFeatures( request )
+        iterator=list(PipesLayer.getFeatures( request ))
         return iterator
         #ids = [i.id() for i in iterator]
         #PipesLayer.selectByIds(ids)
@@ -186,6 +213,7 @@ class QWater_02Flow(object):
                 else:
                     totAcum+=ext
         return totAcum
+    #Lista os tubos cortados (Interceptados) por limite de Zona Hidraulica
     def ListInterPipes(self, pipesLyr, ZoneLyr):
         result=[]
         self.selectByLocation(pipesLyr, ZoneLyr, 7)
@@ -268,5 +296,5 @@ class QWater_02Flow(object):
             return result
 
     # Display warning message
-    def warning(self, message):
-        iface.messageBar().pushMessage(self.SETTINGS, message, level=Qgis.Warning, duration=4)
+    def warning(self, message, level=Qgis.Warning, duration=5):
+        iface.messageBar().pushMessage(self.SETTINGS, message, level, duration)

@@ -4,7 +4,9 @@
         <file>icons/qwater.svg</file>
         <file>icons/00settings.svg</file>
         <file>icons/01rename.svg</file>
-        <file>icons/01vazao.svg</file>
+        <file>icons/02vazao.svg</file>
+		<file>icons/03dxfout.svg</file>
+		<file>icons/04staticHead.svg</file>
         <file>icons/fields_fill.svg</file>
         <file>icons/folder.svg</file>
         <file>icons/junction.svg</file>
@@ -21,7 +23,12 @@
         <file>icons/makemodel.svg</file>
         <file>icons/style.svg</file>
         <file>icons/sizing.svg</file>
+        <file>icons/sizing_iterative.svg</file>
         <file>icons/getelevation.svg</file>
         <file>icons/epanet.svg</file>
+        <file>icons/profile.svg</file>
+		<file>icons/curves.svg</file>
+        <file>icons/cursorPto.svg</file>		
+		<file>addon/waterNet/icons/fittings.svg</file>
     </qresource>
 </RCC>

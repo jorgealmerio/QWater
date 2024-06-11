@@ -126,7 +126,7 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
                         reproject = (layer.crs().mapUnits() != mapunits)
                         reprojectgeographic = not layer.crs().isGeographic()
                         if reprojectgeographic:
-                            epsg4326 = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+                            epsg4326 = QgsCoordinateReferenceSystem("EPSG:4326") #QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId) deprecated creator
                             reprojectgeographic = QgsCoordinateTransform(layer.crs(), epsg4326, QgsProject.instance())
                         utmsrs = False
                         # loop over all features
@@ -300,7 +300,7 @@ class GHydraulicsModelMaker(GHydraulicsCommon):
             point.setGeometry(geometry)
             attrs = feature.attributes()
             point.setAttributes([str(attrs[ididx])])
-            self.allnodes.insertFeature(point)
+            self.allnodes.addFeature(point) #30/04/2024 Almerio replaced deprecated "insertFeature" by "addFeature"
             self.nodemap[point.id()] = point
             # self.log('Added to spatial index: '+str(attrs[ididx])+' '+str(geometry.asPoint().x())+' '+str(geometry.asPoint().y()))
 

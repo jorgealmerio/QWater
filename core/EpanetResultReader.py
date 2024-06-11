@@ -51,6 +51,7 @@ class EpanetResultReader(object):
     def getNodeResult(self, step, id):
         results = {}
         offset = self.nodes[id.encode()] + step * (4 * self.nodecount + 8 * self.linkcount)
+        #print('step={},len(self.nfa)={},offset={}'.format(step,len(self.nfa),offset))
         for field in GHydraulicsModel.NODE_RESULTS:
             results[field] = self.nfa[offset]
             offset = offset + self.nodecount

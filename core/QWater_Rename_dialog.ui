@@ -32,7 +32,7 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <property name="windowTitle">
-   <string>Renomear Rede</string>
+   <string>Renumber Network</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <property name="minimumSize">

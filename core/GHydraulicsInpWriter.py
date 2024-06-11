@@ -50,7 +50,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
         return QCoreApplication.translate('QWater',message)
     '''
     # Write to the given filename
-    def write(self, filename, backdrop):
+    def write(self, filename, backdrop, silent=False):
         self.filename = filename
         self.backdrop = backdrop
         template = open(self.templateFilename)
@@ -64,7 +64,8 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                 self.inpfile.write(line)
         self.inpfile.close()
         template.close()
-        self.iface.messageBar().pushMessage(self.SETTINGS, filename+QCoreApplication.translate('QWater',' successfully created!'), level=Qgis.Info, duration=4)
+        if silent==False:
+            self.iface.messageBar().pushMessage(self.SETTINGS, filename+QCoreApplication.translate('QWater',' successfully created!'), level=Qgis.Info, duration=4)
 
     # Write the given section to the INP file
     def writeSection(self, section):
@@ -75,6 +76,9 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                 return section
         elif 'BACKDROP' == section and self.backdrop:
             self.writeBackdropSection()
+            return section
+        elif 'CURVES' == section:
+            self.writeCurvesSection()
             return section
         return None
 
@@ -193,7 +197,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                                 continue
                             pipes = pipes + '\n'
                             # vertices
-                            if geometry.wkbType()==QgsWkbTypes.MultiLineString: #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings
+                            if geometry.isMultipart(): #.wkbType()==QgsWkbTypes.MultiLineString: #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings
                                 line = geometry.asMultiPolyline()[0] #if is multipart get only first polyline
                             else:
                                 line = geometry.asPolyline()
@@ -351,7 +355,7 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
                             attrs = feature.attributes()
                             node1 = self.getString(attrs[node1idx])
                             if  node1 == id or node1 == virtual_id:
-                                if geometry.wkbType()==QgsWkbTypes.MultiLineString: #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings
+                                if geometry.isMultipart(): #geometry.isMultipart(): #Almerio: Adicionei esse "if" para resolver MultiLineStrings #estava: geometry.wkbType()==QgsWkbTypes.MultiLineString
                                     g=geometry.asMultiPolyline()
                                     s=g[0][0]
                                     e=g[-1][-1]
@@ -415,6 +419,46 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
     # Canonical backdrop name from inp file
     def getBackdropFromInp(self, inpfilename):
         return os.path.splitext(inpfilename)[0]+'.bmp'
+    
+    # Write out the Curves section
+    def writeCurvesSection(self):
+        self.writeSectionLabel('CURVES')
+        curvesDict = self.curvesDict
+        type_names = {0: 'VOLUME',
+                  1: 'PUMP',
+                  2: 'EFFICIENCY',
+                  3: 'HEADLOSS'}
+        
+        #write section header
+        self.inpfile.write(';ID              	X-Value     	Y-Value\n')
+        if curvesDict: #19/01/2024: To avoid create null curves
+            for curvaID in curvesDict:
+                curvaArray = curvesDict[curvaID]                    
+                i=0                    
+                for linha in curvaArray:
+                    if i==0: #First line has description and curve type                    
+                        curve_desc = linha[0]
+                        curve_type = linha[1]
+                        curve_type_name = type_names[curve_type]
+                        #write curve description
+                        self.inpfile.write(';{}: {}\n'.format(curve_type_name, curve_desc))
+                        i+=1
+                    else:
+                        x = linha[1]
+                        y = linha[2]
+                        #write curve description
+                        self.inpfile.write(' {}\t{}\t{}\n'.format(curvaID, x, y))
+        
+    def Project_Curves_to_Dict(self):
+        proj = QgsProject.instance()
+        curvesStr = proj.readEntry(self.SETTINGS, "CURVES","0")[0]
+        curves_d = {}
+        resp = False
+        if curvesStr:
+            curvesDict = eval(curvesStr)
+            if curvesDict:                               
+                resp = curvesDict
+        return resp
 
     def __init__(self, templateFilename, iface):
         self.templateFilename = templateFilename
@@ -424,6 +468,11 @@ class GHydraulicsInpWriter(GHydraulicsCommon):
         self.ycoords = []
         self.getLayers()
         self.sections = {EpanetModel.JUNCTIONS: '', EpanetModel.PIPES: ''}
+        
+        #if Epanet Curves (for while only Pumps curves) is defined in current Qgis Project 
+        self.curvesDict = self.Project_Curves_to_Dict()
+        if self.curvesDict:
+            self.sections['CURVES'] = ''
         # Dictionary of those node1 values that change because of virtual lines
         self.virtualnodes = {}
         # Dictionary of those pipes that are merged into virtual lines

@@ -60,7 +60,7 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
         o.close()
         os.unlink(out[1])
         e = open(err[1], 'r')
-        errors = e.read()
+        errors = e.read()        
         if 0 < len(errors):
             self.log('ERRORS')
             self.log(errors)
@@ -131,7 +131,7 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
                             for fieldname, result in results.items():
                                 layer.changeAttributeValue(feature.id(), idx[fieldname], result)
                         layer.endEditCommand()
-
+    
     # Save the results of a given timestep to the layers
     def setStep(self, step):
         self.beginEditCommand('Loading Step '+str(step+1))
@@ -139,7 +139,35 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
         self.setStepResults(step, EpanetModel.COORDINATE_SECTIONS, GHydraulicsModel.NODE_RESULTS, self.e.getNodeResult)
         # link results
         self.setStepResults(step, EpanetModel.LINK_SECTIONS, GHydraulicsModel.LINK_RESULTS, self.e.getLinkResult)
+        
+        #Acrescentei para gravar o resultado da piezometrica da saida das bombas também, util para fazer o perfil
+        proj=QgsProject.instance()
+        ProjNode=proj.readEntry("QWater", 'PUMPS')[0]
+        if ProjNode!='':
+            vLayerLst=proj.mapLayersByName(ProjNode)
+            if vLayerLst:
+                vLayer=vLayerLst[0]
+                self.gravaPump_Downstream_HEAD(vLayer, step)
+        
         self.endEditCommand()
+
+    def gravaPump_Downstream_HEAD(self, PumpLayer, step):
+        campos = ['RES_HEA_UP','RES_HEA_DN']
+        idx1 = PumpLayer.fields().indexFromName(campos[0])
+        idx2 = PumpLayer.fields().indexFromName(campos[1])
+        if idx1!=-1 and idx2!=-1:
+            PumpLayer.startEditing()
+            for feat in PumpLayer.getFeatures():
+                #upstream HEAD
+                id=feat['DC_ID']
+                res = self.e.getNodeResult(step, id)                
+                feat[campos[0]] = res['RESULT_HEA']
+                #downstream HEAD
+                id=feat['DC_ID']+'dn'
+                res = self.e.getNodeResult(step, id)                
+                feat[campos[1]] = res['RESULT_HEA']
+                
+                PumpLayer.updateFeature(feat)
 
     # Determine the EPANET binary to use
     def __init__(self):
@@ -153,7 +181,8 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
                     aLst = list(a)
                     aLst[1]='ELF'
                     a = tuple(aLst)
-            self.epanet = a[0]+'/'+a[1]+'/epanet2d'
+            #self.epanet = a[0]+'/'+a[1]+'/epanet2d' #Epanet 2.0
+            self.epanet = a[0]+'/'+a[1]+'/runepanet' #Epanet 2.2
             if 'WindowsPE' == a[1]:
                 self.epanet = self.epanet + '.exe'
         if sys.platform=='linux':
@@ -166,6 +195,6 @@ class GHydraulicsModelRunner(GHydraulicsCommon):
         try:
             os.chmod(self.epanet, 0o755)
         except:
-            raise GHydraulicsException('Failed to make '+self.epanet+' excecutable.')
+            raise GHydraulicsException('Failed to make '+self.epanet+' executable.')
         self.log(self.epanet)
         self.getLayers()

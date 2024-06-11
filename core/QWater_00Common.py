@@ -28,10 +28,12 @@ from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import *
 import os.path
 #        from qgis.gui import QgsMessageBar
-
+ClassName='QWater_00Common'
 class QWater_00Common(object):
     # Store all configuration data under this key
     SETTINGS = 'QWater'
+    def tr(self, Texto):
+        return QCoreApplication.translate(ClassName,Texto)
     def CompRealGeom(self,vLayer):
         totAcum=0
         geoAcum=0
@@ -53,21 +55,21 @@ class QWater_00Common(object):
         progressMessageBar.layout().addWidget(progress)
         iface.messageBar().pushWidget(progressMessageBar)
         return progress,progressMessageBar
-    def PegaQWaterLayer(self, aForma):
+    def PegaQWaterLayer(self, aForma, silent=False):
         proj = QgsProject.instance()
         #aForma='PIPES'
         ProjVar=proj.readEntry(self.SETTINGS, aForma)[0]
         if ProjVar=='':
-            msgTxt=QCoreApplication.translate('QWater','Undefined Layer: ') +aForma
-            #QMessageBox.warning(None,'QEsg',msgTxt)
-            iface.messageBar().pushMessage("QWater", msgTxt, level=Qgis.Warning, duration=10)
+            msgTxt=self.tr('Undefined Layer: ') +aForma
+            if not silent:
+                iface.messageBar().pushMessage("QWater", msgTxt, level=Qgis.Warning, duration=10)
             return False
         LayerLst=proj.mapLayersByName(ProjVar)
         if LayerLst:
             layer = proj.mapLayersByName(ProjVar)[0]
             return layer
         else:
-            msgTxt=aForma+'='+ProjVar+QCoreApplication.translate('QWater',u' (Layer not found)')
-            #QMessageBox.warning(None,'QEsg',msgTxt)
-            iface.messageBar().pushMessage("QWater:", msgTxt, level=Qgis.Warning, duration=10)
+            msgTxt=aForma+'='+ProjVar+self.tr(' (Layer not found)')
+            if not silent:
+                iface.messageBar().pushMessage("QWater:", msgTxt, level=Qgis.Warning, duration=10)
             return False
