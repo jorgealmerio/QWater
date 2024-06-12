@@ -201,69 +201,68 @@ class QWaterNet_addon(object):
         else:
             return ''
     
-    def calcFittings(self,geom_p,lines_geom,connCount,DNs, id):
-        match connCount:
-            case 1: #k (cap)
-                az=self.azimutePto2NearestLine(geom_p,lines_geom[0])
-                return True, 'k', az
-            case 2: #curves or reductions
-                az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
-                az1=self.azimutePto2NearestLine(geom_p,lines_geom[1])
-                difabs = abs(az1-az0)
-                if difabs>180:
-                    angInt=360-difabs
-                else:
-                    angInt=difabs
-                defl=180-angInt
-                peca = self.curvaByDef(defl)
-                if peca: #45 < angInt < 135:
+    def calcFittings(self,geom_p,lines_geom,connCount,DNs, id):        
+        if connCount== 1: #k (cap)
+            az=self.azimutePto2NearestLine(geom_p,lines_geom[0])
+            return True, 'k', az
+        elif connCount== 2: #curves or reductions
+            az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
+            az1=self.azimutePto2NearestLine(geom_p,lines_geom[1])
+            difabs = abs(az1-az0)
+            if difabs>180:
+                angInt=360-difabs
+            else:
+                angInt=difabs
+            defl=180-angInt
+            peca = self.curvaByDef(defl)
+            if peca: #45 < angInt < 135:
+                bool=True
+                azmed = ((az0+az1)/2)
+                angs=abs(az1-azmed)+abs(azmed-az0)
+                sup= 180 if angs>180 else 0
+                ang=((az0+az1)/2)+135+sup
+                if peca=='c45':
+                    ang-=30
+                elif peca=='c22':
+                    ang-=30
+            else:
+                if DNs[0]!=DNs[-1]:
                     bool=True
-                    azmed = ((az0+az1)/2)
-                    angs=abs(az1-azmed)+abs(azmed-az0)
-                    sup= 180 if angs>180 else 0
-                    ang=((az0+az1)/2)+135+sup
-                    if peca=='c45':
-                        ang-=30
-                    elif peca=='c22':
-                        ang-=30
+                    peca='rd'
+                    ang = az0
                 else:
-                    if DNs[0]!=DNs[-1]:
-                        bool=True
-                        peca='rd'
-                        ang = az0
-                    else:
-                        bool=False
-                        ang=9999                
-                return bool, peca, ang
-            case 3: #te
-                az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
-                az1=self.azimutePto2NearestLine(geom_p,lines_geom[1])
-                az2=self.azimutePto2NearestLine(geom_p,lines_geom[2])
-                azList=sorted([az0,az1,az2])
-                az0=azList[0]
-                az1=azList[1]
-                az2=azList[2]
-                
-                dif10=abs(abs(az1-az0)-180)
-                dif20=abs(abs(az2-az0)-180)
-                dif21=abs(abs(az2-az1)-180)
-                
-                if dif10<dif20:
-                    if dif10<dif21:
-                        ang=az1+(90 if az1< az2 else -90)
-                    else:
-                        ang=az1+(90 if az1> az2 else -90)
+                    bool=False
+                    ang=9999                
+            return bool, peca, ang
+        elif connCount== 3: #te
+            az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
+            az1=self.azimutePto2NearestLine(geom_p,lines_geom[1])
+            az2=self.azimutePto2NearestLine(geom_p,lines_geom[2])
+            azList=sorted([az0,az1,az2])
+            az0=azList[0]
+            az1=azList[1]
+            az2=azList[2]
+            
+            dif10=abs(abs(az1-az0)-180)
+            dif20=abs(abs(az2-az0)-180)
+            dif21=abs(abs(az2-az1)-180)
+            
+            if dif10<dif20:
+                if dif10<dif21:
+                    ang=az1+(90 if az1< az2 else -90)
                 else:
-                    if dif20<dif21:
-                        ang=az2+(90 if az1<az0 else -90)
-                    else:
-                        ang=az2+(90 if az1> az0 else -90)
-                return True, 'te', ang
-            case 4: #cruzeta
-                az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
-                return True, 'cruzeta', az0
-            case _:
-                return False, '', 9999
+                    ang=az1+(90 if az1> az2 else -90)
+            else:
+                if dif20<dif21:
+                    ang=az2+(90 if az1<az0 else -90)
+                else:
+                    ang=az2+(90 if az1> az0 else -90)
+            return True, 'te', ang
+        elif connCount== 4: #cruzeta
+            az0=self.azimutePto2NearestLine(geom_p,lines_geom[0])
+            return True, 'cruzeta', az0
+        else:
+            return False, '', 9999
                 
     def createFittings(self):
         nodeLayer = self.common.PegaQWaterLayer('JUNCTIONS')

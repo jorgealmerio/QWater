@@ -5,13 +5,15 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Hydraulic design and analysis of water supply networks
 category=Plugins
-version=3.3.0
+version=3.3.1
 author=Jorge Almerio
 email=jorgealmerio@yahoo.com.br
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+	3.3.1 - Bug
+		2024/06/12 - Retrocompatibility with python<3.10 (match function)
 	3.3.0 - Bug and Improvements
 		2024/05/22 - On flows calculation display warning when any Zone Demand has no Junction
 		2024/05/21 - Static head calculation and automatic plot to profile view
