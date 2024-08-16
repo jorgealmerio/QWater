@@ -5,6 +5,8 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 
 from ...QWater_00Common import *
+from . import pipeSwap_tool
+
 
 ClassName='QWaterNet_addon'
 class QWaterNet_addon(object):
@@ -28,36 +30,88 @@ class QWaterNet_addon(object):
     def __init__(self, iface):
         # save reference to the QGIS interface
         self.iface = iface
+        self.canvas = self.iface.mapCanvas()
         self.common=QWater_00Common()
+        self.actions = []
         
-    def tr(self, Texto):
-        return QCoreApplication.translate(ClassName,Texto)
-
-    def initGui(self):
-        # create actions
-        defIconPath=":/plugins/QWater/addon/waterNet/icons/fittings.svg"
-
-        self.createFittings_Action = QAction(QIcon(defIconPath), self.tr('Create Fittings\'s'), self.iface.mainWindow())
-    
-        # Connect actions to triggers
-        self.createFittings_Action.triggered.connect(self.createFittings)
-
         # Find QWater ToolBar
         for x in self.iface.mainWindow().findChildren(QToolBar): 
             # print x.windowTitle()
             if x.windowTitle() == '&QWater':
                 #x.addWidget(iface.toolButton)
-                self.toolbar = x               
+                self.toolbar = x
+                break        
         
-        #Add separator
-        #self.toolbar.addSeparator()
-        
-        #Add tool button
-        self.toolbar.addAction(self.createFittings_Action)        
+    def tr(self, Texto):
+        return QCoreApplication.translate(ClassName,Texto)
+
+    def initGui(self):
+        """Create the menu entries and toolbar icons inside the QGIS GUI."""
+
+        icon_path = ':/plugins/QWater/addon/waterNet/icons/fittings.svg'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Create Fittings\'s'),
+            callback=self.createFittings,
+            parent=self.iface.mainWindow())
+
+        self.mapTool = pipeSwap_tool.pipeSwapTool(self.canvas)        
+        #self.canvas.setMapTool(self.mapTool)
+        icon_path = ':/plugins/QWater/addon/waterNet/icons/pipe_swap.svg'
+        self.add_action(
+            icon_path,
+            text=self.tr('Pipe Swap tool'),
+            callback=self.PipeSwap_Tool,
+            checkable=True,
+            mapTool=self.mapTool,
+            parent=self.iface.mainWindow())
+    
+    #Add a toolbar icon to the toolbar    
+    def add_action(
+        self,
+        icon_path,
+        text,
+        callback,        
+        add_to_menu=False,
+        add_to_toolbar=True,
+        checkable=False,
+        mapTool=None,
+        status_tip=None,
+        whats_this=None,
+        parent=None):
+
+
+        icon = QIcon(icon_path)
+        action = QAction(icon, text, parent)
+        action.triggered.connect(callback)
+
+        if status_tip is not None:
+            action.setStatusTip(status_tip)
+
+        if whats_this is not None:
+            action.setWhatsThis(whats_this)
+
+        if add_to_toolbar:
+            self.toolbar.addAction(action)
+        if checkable:
+            action.setCheckable(True)
+        if mapTool:
+            mapTool.setAction(action) # associate the QAction with the Map Tool to let qgis handle the tool checked state
+        if add_to_menu:
+            self.iface.addPluginToMenu(
+                self.menu,
+                action)
+
+        self.actions.append(action)
+
+        return action
     
     def unload(self):
-        # remove actions        
-        self.toolbar.removeAction(self.createFittings_Action)
+        """Removes the plugin menu item and icon from QGIS GUI."""
+        for action in self.actions:
+            self.toolbar.removeAction(action)
+            
+        # remove the toolbar
         del self.toolbar
     
     # Display message
@@ -287,5 +341,17 @@ class QWaterNet_addon(object):
         style = QgsMapLayerStyle()
         style.readFromLayer(nodeLayer)
         
-        style_manager.setCurrentStyle('Fittings')
-
+        style_manager.setCurrentStyle('Fittings')        
+    
+    def PipeSwap_Tool(self):
+        if self.canvas.mapTool() == self.mapTool:
+            self.canvas.unsetMapTool(self.mapTool)
+            self.iface.actionSelectRectangle().trigger()
+            self.mapTool.deactivate()            
+        else:
+            self.canvas.setMapTool(self.mapTool)            
+        '''
+        self.iface.actionSelect().trigger()
+        aviso=self.tr('Pipe swap tool not implemented yet')        
+        iface.messageBar().pushMessage("QWater:", aviso, level=Qgis.Info, duration=4)
+        '''

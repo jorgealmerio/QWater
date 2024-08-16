@@ -5,15 +5,27 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Hydraulic design and analysis of water supply networks
 category=Plugins
-version=3.3.1
+version=3.3.2
 author=Jorge Almerio
 email=jorgealmerio@yahoo.com.br
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+	3.3.2 - Bug and Improvements
+		2024/08/08 - Bug fix #22: error when has a base map like "osm standard" in qgis project and open the "settings" Dialog
+		2024/07/03 - Added option to ignore Existent Junctions in Export to DXF tool
+		2024/07/10 - Added option to choose which features (pipes, junction, labels) will be exported in DXF Export tool
+		2024/07/05 - Bug fix Diameter calculation iterative when user choose only selected features	
+		2024/07/05 - Added Tool for pipe data(Diameter, material, roughness) assignment
+		2024/07/03 - Added option to ignore Existent fittings in Export to DXF tool
+		2024/06/28 - Added Save Edits Button to save all QWater layers at once
+		2024/06/18 - Select the DEM on Raster sampling if already defined on QWater settings
+		2024/06/18 - Load Static pressure Style after calculate Static Pressure
+		2024/06/17 - Fix some translates to portuguese
+		2024/06/17 - Static Pressure Style		
 	3.3.1 - Bug
-		2024/06/12 - Retrocompatibility with python<3.10 (match function)
+		2024/06/12 - Retrocompatibility with python<3.10 (removed match function)
 	3.3.0 - Bug and Improvements
 		2024/05/22 - On flows calculation display warning when any Zone Demand has no Junction
 		2024/05/21 - Static head calculation and automatic plot to profile view

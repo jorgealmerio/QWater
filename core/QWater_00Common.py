@@ -73,3 +73,20 @@ class QWater_00Common(object):
             if not silent:
                 iface.messageBar().pushMessage("QWater:", msgTxt, level=Qgis.Warning, duration=10)
             return False
+    
+    def getUser_iterFeat(self):
+        layer = self.PegaQWaterLayer('PIPES')
+        if layer.selectedFeatureCount()==0:
+            iterFeat=layer.getFeatures()
+        else:
+            resp=QMessageBox.question(None,'QWater',QCoreApplication.translate('QWater','Size Diameters only for selected features?'),
+                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if resp==QMessageBox.Cancel:
+                iface.messageBar().pushMessage("QWater",'QWater: Operation cancelled. Nothing done!',level=Qgis.Info, duration=10)
+                iterFeat=None
+            else:
+                if resp==QMessageBox.Yes:
+                    iterFeat=layer.selectedFeatures()
+                else:
+                    iterFeat=layer.getFeatures()
+        return list(iterFeat)

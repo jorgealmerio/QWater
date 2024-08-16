@@ -115,6 +115,8 @@ class QWater_04Static_Head(object):
                 feat[fldName]=junctionResults0[dcid]
                 layer.updateFeature(feat)
             
+            self.selectStyle(layer, 'Static Pressure')
+            
             aviso=self.tr("Static Head Calculated!")
             self.warning( aviso, nivel=Qgis.Info)
         else:
@@ -122,6 +124,16 @@ class QWater_04Static_Head(object):
             self.warning(aviso)
         
         QApplication.restoreOverrideCursor()
+    
+    def selectStyle(self, layer, styleName):
+        # muda o estilo para fittings
+        style_manager = layer.styleManager()
+
+        # read valid style from layer
+        style = QgsMapLayerStyle()
+        style.readFromLayer(layer)
+        
+        style_manager.setCurrentStyle(styleName)   
     
     def rollBack_results(self):
         proj = QgsProject.instance()

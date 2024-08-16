@@ -124,7 +124,8 @@ class QWaterSettingsDialog(QDialog):
         #Conecta PopFields
         self.popLineEdits = [self.ui.Txt_POPINI, self.ui.Txt_POPFIM, self.ui.Txt_PERCAPTA, self.ui.Txt_K1_DIA, self.ui.Txt_K2_HORA, self.ui.Txt_COEF_ATEND]
         for LineEdit in self.popLineEdits:
-            LineEdit.editingFinished.connect(self.calcFlowsByPop)
+            LineEdit.editingFinished.connect(self.calcFlowsByPop)            
+        
     def btnFlow_push(self):
         frm = self.ui
         tableWidget=frm.tableWidget
@@ -155,7 +156,7 @@ class QWaterSettingsDialog(QDialog):
         maxFlowIdx = cabecalho.index(maxFlowFld)
         
         #import GhyEconomicDiameter class to get colebrook function
-        from .ghyeconomicdiameter import GhyEconomicDiameter as ghyDiam
+        from .ghyeconomicdiameter import GhyEconomicDiameter as ghyDiam        
         
         #iterate throught table widget rows
         for row in range(tableWidget.rowCount()):
@@ -163,7 +164,8 @@ class QWaterSettingsDialog(QDialog):
             e=float(eval(tableWidget.item(row, roughIdx).text()))
             j=float(eval(tableWidget.item(row, headIdx).text()))
             # arguments 'Flow','Diameter' not used, it is only for instance creation
-            vazao = ghyDiam('Flow','Diameter').ColebrookVazao(j,d,e)
+            
+            vazao = ghyDiam('Flow','Diameter', []).ColebrookVazao(j,d,e)
             
             item = QTableWidgetItem('{0:.3f}'.format(vazao)) #.decode('utf8')
             item.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)

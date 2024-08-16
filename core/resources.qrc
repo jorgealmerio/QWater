@@ -20,6 +20,7 @@
         <file>icons/copy.png</file>
         <file>icons/export.svg</file>
         <file>icons/run.svg</file>
+		<file>icons/SaveEdits.svg</file>
         <file>icons/makemodel.svg</file>
         <file>icons/style.svg</file>
         <file>icons/sizing.svg</file>
@@ -30,5 +31,6 @@
 		<file>icons/curves.svg</file>
         <file>icons/cursorPto.svg</file>		
 		<file>addon/waterNet/icons/fittings.svg</file>
+		<file>addon/waterNet/icons/pipe_swap.svg</file>
     </qresource>
 </RCC>

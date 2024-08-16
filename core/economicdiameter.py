@@ -54,7 +54,7 @@ if not vlayer.startEditing():
     sys.stderr.write("ERROR: Failed to edit layer "+sys.argv[1])
     sys.exit()
 
-ecodia = GhyEconomicDiameter("RESULT_FLO", "DIAMETER")
+ecodia = GhyEconomicDiameter("RESULT_FLO", "DIAMETER",list(vlayer.getFeatures()))
 try:
     ecodia.commitEconomicDiametersForLayer(vlayer)
 except GHydraulicsException as e:

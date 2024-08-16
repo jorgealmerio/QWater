@@ -55,9 +55,10 @@ class GhyEconomicDiameter(object):
                    191.62:  394.6,
                    338.16:  489.4,}
 
-    def __init__(self, flowfieldname, diameterfieldname):
+    def __init__(self, flowfieldname, diameterfieldname, iterFeat):
         self.flofieldname = flowfieldname
         self.diafieldname = diameterfieldname
+        self.iterFeat = iterFeat
     #Calcula a vazao em L/s pela formulal de colebrook 
     #a partir da perda unitaria m/km, diametro em mm, rugosidade em mm, viscosidade em m2/s
     def ColebrookVazao(self, j_mkm, D_mm, e_mm=1, v=0.000001):
@@ -112,8 +113,7 @@ class GhyEconomicDiameter(object):
         proj = QgsProject.instance()
         tubosMat=proj.readEntry(self.SETTINGS, "TUBOS_MAT","0")[0]            
         if tubosMat=='0':
-            raise GHydraulicsException('ERROR: Please, Define Pipes on settings dialog First!')
-            #tubos=QWaterModel.TUBOS_MAT
+            raise GHydraulicsException('ERROR: Please, Define Pipes on settings dialog First!')            
         else:
             tubos=eval(tubosMat)
             if not isinstance(tubos[0][0], str):
@@ -126,32 +126,11 @@ class GhyEconomicDiameter(object):
         economicflows = list(self.diceconomic.keys())
         economicflows.sort()
 
-        dicattributechanges = {}
-
-        if vlayer.selectedFeatureCount()==0:
-            iter=vlayer.getFeatures()
-        else:
-            '''
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle('QWater')
-            msgBox.setInformativeText('Diameter size only for selected features?')
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
-            msgBox.setDefaultButton(QMessageBox.Yes)
-            resp=msgBox.exec_()
-            '''
-            resp=QMessageBox.question(None,'QWater',QCoreApplication.translate('QWater','Size Diameters only for selected features?'),
-                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel) #QMessageBox.Yes, QMessageBox.No, QMessageBox.Cancel)
-            if resp==QMessageBox.Cancel:
-                raise GHydraulicsException('QWater: Operation cancelled. Nothing done!')
-            else:
-                if resp==QMessageBox.Yes:
-                    iter=vlayer.selectedFeatures()
-                else:
-                    iter=vlayer.getFeatures()        
+        dicattributechanges = {}   
         
         # Loop over selected or all features depend on last user option
         LowDiam=False
-        for feature in iter:
+        for feature in self.iterFeat:
             # Fetch result_flow attribute
             attrs = feature.attributes()
             flow = abs(attrs[flowfieldidx]) #Almerio: acrescentei a funcao 'abs' aqui para trazer o valor absoluto da vazao

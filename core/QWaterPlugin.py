@@ -68,7 +68,7 @@ from .addon.waterNet.QWaterNet import QWaterNet_addon
 ClassName='QWaterPlugin'
 class QWaterPlugin:
     # Store settings in QGIS projects under this key
-    SETTINGS ="QWater" #"ghydraulics""QWater"        
+    SETTINGS ="QWater"
 
     def __init__(self, iface):
         # save reference to the QGIS interface
@@ -112,6 +112,8 @@ class QWaterPlugin:
         self.profiletool = ProfileToolCore(self.iface,self)
         #qepanet tool used for Pump Curves
         self.params = Parameters()
+        self.QW_layers = self.get_QWater_layers()
+        self.canvas=self.iface.mapCanvas()
 
     def tr(self, message):
         return QCoreApplication.translate(ClassName, message)
@@ -127,7 +129,8 @@ class QWaterPlugin:
         self.makeModelAction = QAction(QIcon(':/plugins/QWater/icons/makemodel.svg'), self.tr('Make Model'), self.iface.mainWindow())
         self.fillFieldsAction = QAction(QIcon(':/plugins/QWater/icons/fields_fill.svg'), self.tr('Fill up Fields'), self.iface.mainWindow())
         self.writeInpAction = QAction(QIcon(':/plugins/QWater/icons/epanet.svg'), self.tr('Write EPANET INP file'), self.iface.mainWindow())
-        self.runEpanetAction = QAction(QIcon(':/plugins/QWater/icons/run.svg'), self.tr('Run EPANET simulation'), self.iface.mainWindow())       
+        self.runEpanetAction = QAction(QIcon(':/plugins/QWater/icons/run.svg'), self.tr('Run EPANET simulation'), self.iface.mainWindow())
+        self.saveEditsAction = QAction(QIcon(':/plugins/QWater/icons/SaveEdits.svg'), self.tr('Save All QWater Edits'), self.iface.mainWindow())        
         self.aboutAction = QAction(QIcon(":/plugins/QWater/icons/qwater.svg"), self.tr("&About"), self.iface.mainWindow())      
         
         self.LoadStylesAction = QAction(QIcon(":/plugins/QWater/icons/style.svg"), self.tr("Load default styles"), self.iface.mainWindow())
@@ -154,6 +157,7 @@ class QWaterPlugin:
         #self.profiletool.dockwidget.close.connect(self.profileDock_closed)
         
         self.runEpanetAction.triggered.connect(self.runEpanet)
+        self.saveEditsAction.triggered.connect(self.save_QWater_Edits)
         self.aboutAction.triggered.connect(self.about)
         
         self.RenameClasse=Rename_Tools(self.iface)
@@ -178,7 +182,16 @@ class QWaterPlugin:
         self.toolbar.addAction(self.renameAction)
         self.toolbar.addAction(self.fillFieldsAction)
         self.toolbar.addAction(self.vazaoAction)        
-        self.toolbar.addAction(self.runEpanetAction)        
+        self.toolbar.addAction(self.runEpanetAction)
+        
+        #Add separator
+        self.toolbar.addSeparator()
+        
+        #Save Edits button
+        self.toolbar.addAction(self.saveEditsAction)
+        self.saveEditsAction.setEnabled(False)
+        #self.QWater_layers_connect()
+        self.canvas.layersChanged.connect(self.QWater_layers_connect)
         
         #Add separator
         self.toolbar.addSeparator()
@@ -266,6 +279,10 @@ class QWaterPlugin:
     def unload(self):
         #QWaterNet_addon unload
         self.QWaterNet_addon_Classe.unload()
+        try:
+            self.canvas.layersChanged.disconnect(self.QWater_layers_disconnect)
+        except:
+            pass
         
         # remove the plugin menu item and icon
         self.iface.removePluginMenu("&QWater", self.aboutAction)
@@ -302,6 +319,7 @@ class QWaterPlugin:
         self.toolbar.removeAction(self.StaticHead_action)
         
         self.toolbar.removeAction(self.vazaoAction)
+        self.toolbar.removeAction(self.saveEditsAction)
         self.toolbar.removeAction(self.runEpanetAction)
         self.toolbar.removeAction(self.fillFieldsAction)
         self.toolbar.removeAction(self.makeModelAction)
@@ -324,7 +342,7 @@ class QWaterPlugin:
         QWater_04Static_Head(self.iface).StaticHead_calculate()
         
     def profileDock_closed(self):
-        print('profileDock_closed')
+        QgsMessageLog.logMessage('profileDock_closed',self.SETTINGS,Qgis.Info)
     def openProfileWidget(self):
         #self.warning('Profile tool still under development!', nivel=Qgis.Info)        
         if not self.profiletool.Opened: #not self.profileDockOpened:
@@ -368,7 +386,6 @@ class QWaterPlugin:
                     vLayer.updateFeature(feicao)
             else:
                 undefs=True
-#        self.warning('Fill Fields call not working yet')
         if not undefs:
             if preencheu:
                 self.warning(self.tr('Successfull fill in!'),Qgis.Info)
@@ -402,7 +419,7 @@ class QWaterPlugin:
         if not lyrPipe:
             return
 
-        dlg = self.dlg #self.dlg #GHydraulicsSettingsDialog()
+        dlg = self.dlg
         template = dlg.getTemplate()
         
         inp = GHydraulicsInpReader(template)
@@ -437,22 +454,18 @@ class QWaterPlugin:
                 dlg.ui.comboStep.addItems([str(x) for x in range(1, steps+1)])
                 dlg.show()                
                 result = dlg.exec_()
-                #print(result)
-                return
-            
-            '''
-            #if has warnings
-            elif any(x in output for x in warnings):
-                # Let user agree to the begin iteration even with warnings
-                msgTxt = '\n\n QWater can try to Calculate Economic Diameters (Iterative way) while there are warnings, but may NOT converge!\n Click OK to continue at your own risk!'
-            '''
+                return            
+
             if any(x in output for x in erros):
-                print('First run had warnings! Trying to Continue...')
-            print("Starting and saving first simulation results...")
+                QgsMessageLog.logMessage('First run had warnings! Trying to Continue...',self.SETTINGS,Qgis.Info)
+            QgsMessageLog.logMessage("Starting and saving first simulation results...",self.SETTINGS,Qgis.Info)
             runner.setStep(0) #Load simulation Step 1 (first step=0) to features, First Time
-            junctionResults0 = self.readResults('JUNCTIONS', 'RESULT_PRE', runner) #Junction pressure results
-            #pipeResults0 = self.readResults('PIPES', 'RESULT_FLO', runner) #Pipe flow results
-            self.calc_EcoDiameter() #Calculate economic Diameters and load to features            
+            junctionResults0 = self.readResults('JUNCTIONS', 'RESULT_PRE', runner) #Junction pressure results 
+            
+            iterFeat = self.common.getUser_iterFeat() # Ask user choose to run only selected feratures or not
+            if iterFeat is None:
+                return
+            self.calc_EcoDiameter(iterFeat) #Calculate economic Diameters and load to features            
             pipeDiameters0 = self.layerField_to_Dict(lyrPipe,GHydraulicsModel.ID_FIELD,EpanetModel.DIAMETER)
             
             iterNum = 1
@@ -460,8 +473,7 @@ class QWaterPlugin:
             pressDiffMax = 9999
             pressAccuracy = 0.1
             diamChanged = True
-            while (diamChanged or pressDiffMax >= pressAccuracy) and iterNum <= IterCount:
-            #while iterNum <= IterCount:
+            while (diamChanged or pressDiffMax >= pressAccuracy) and iterNum <= IterCount:            
                 # Get a temporary file
                 t = tempfile.mkstemp(suffix='.inp')
                 os.close(t[0])
@@ -476,11 +488,9 @@ class QWaterPlugin:
                 runner.setStep(0) #Load simulation Step 1 (first step=0) to features                
                 #Save results to variables
                 junctionResults1 = self.readResults('JUNCTIONS', 'RESULT_PRE', runner) #Junction pressure results
-                #pipeResults1 = self.readResults('PIPES', 'RESULT_FLO', runner) #Pipe flow results
-                self.calc_EcoDiameter() #Calculate economic Diameters and load to features
+                self.calc_EcoDiameter(iterFeat) #Calculate economic Diameters and load to features
                 pipeDiameters1 = self.layerField_to_Dict(lyrPipe,GHydraulicsModel.ID_FIELD,EpanetModel.DIAMETER)
-                #print('pipeDiameters0:',pipeDiameters0)
-                #print('pipeDiameters1:',pipeDiameters1)
+
                 
                 #Check Diameter change between simulations
                 diamChanged = False
@@ -492,15 +502,14 @@ class QWaterPlugin:
                     pressDiffMax = 0
                     #Check max pressure difference between simulations
                     for key, value in junctionResults1.items():
-                        pressDiff = abs(value - junctionResults0[key])
-                        #print("pressDiff:",pressDiff)
+                        pressDiff = abs(value - junctionResults0[key])                        
                         pressDiffMax = max(pressDiff, pressDiffMax)
                 junctionResults0=junctionResults1
                 pipeDiameters0=pipeDiameters1
-                if pressDiffMax==9999:
-                    print('iteration: {}; pressDiffMax:"Not checked!"; diamChanged={}'.format(iterNum, diamChanged))
+                if pressDiffMax==9999:                    
+                    QgsMessageLog.logMessage('iteration: {}; pressDiffMax:"Not checked!"; diamChanged={}'.format(iterNum, diamChanged),self.SETTINGS,Qgis.Info)
                 else:
-                    print('iteration: {}; pressDiffMax:{:.5f}; diamChanged={}'.format(iterNum, pressDiffMax, diamChanged))                
+                    QgsMessageLog.logMessage('iteration: {}; pressDiffMax:{:.5f}; diamChanged={}'.format(iterNum, pressDiffMax, diamChanged),self.SETTINGS,Qgis.Info)                
                 QApplication.processEvents()
                 lyrPipe.triggerRepaint()
                 iterNum+=1
@@ -517,11 +526,11 @@ class QWaterPlugin:
             dict[id]=feature[field]
         return dict
     
-    def calc_EcoDiameter(self):
+    def calc_EcoDiameter(self, iterFeat):
         template = self.dlg.getTemplate()
         maker = GHydraulicsModelMaker(template)
         # Execute the action
-        ecodia = GhyEconomicDiameter(GHydraulicsModel.RESULT_FLO, EpanetModel.DIAMETER)
+        ecodia = GhyEconomicDiameter(GHydraulicsModel.RESULT_FLO, EpanetModel.DIAMETER, iterFeat)
         maker.beginEditCommand('Calculate economic diameters')
         try:
             maker.eachLayer(ecodia.commitEconomicDiametersForLayer, [EpanetModel.PIPES])
@@ -537,7 +546,7 @@ class QWaterPlugin:
         # Get a temporary file
         t = tempfile.mkstemp(suffix='.inp')
         os.close(t[0])
-        dlg = self.dlg #self.dlg #GHydraulicsSettingsDialog()
+        dlg = self.dlg
         template = dlg.getTemplate()
         try:
             writer = GHydraulicsInpWriter(template, self.iface)
@@ -567,11 +576,10 @@ class QWaterPlugin:
             self.warning(self.tr('Running a simulation failed :') + str(e))
         os.unlink(t[1])
         lyrPipe.triggerRepaint()
-        
+    
     # Calculate economic diameters
-    def run(self): #run call_EcoDiameters
-        # Check for "LPS" flow units
-        dlg = self.dlg #GHydraulicsSettingsDialog()
+    def run(self): #run call_EcoDiameters        
+        dlg = self.dlg
         template = dlg.getTemplate()
         inp = GHydraulicsInpReader(template)
         inpunits = inp.getValue('OPTIONS', 'Units').upper()
@@ -587,8 +595,12 @@ class QWaterPlugin:
         if QMessageBox.Cancel == selectedbutton:
             return
 
+        iterFeat = self.common.getUser_iterFeat()
+        if iterFeat is None:
+            return
+
         # Execute the action
-        ecodia = GhyEconomicDiameter(GHydraulicsModel.RESULT_FLO, EpanetModel.DIAMETER)
+        ecodia = GhyEconomicDiameter(GHydraulicsModel.RESULT_FLO, EpanetModel.DIAMETER, iterFeat)
         maker.beginEditCommand('Calculate economic diameters')
         try:
             maker.eachLayer(ecodia.commitEconomicDiametersForLayer, [EpanetModel.PIPES])
@@ -603,7 +615,7 @@ class QWaterPlugin:
 
     # Display the settings dialog
     def showSettings(self):
-        dlg = self.dlg #QWaterSettingsDialog()
+        dlg = self.dlg
         proj = QgsProject.instance()
         layers = proj.mapLayers()        
         hasVectorLayers = False
@@ -655,16 +667,12 @@ class QWaterPlugin:
                             widget.setLayer(None)
                             msgs+='\n{} -> GHydraulics Previous Settings Null'.format(secao)
                     except(KeyError):
-                        widget.setLayer(None)
-                        # fix_print_with_import
-                        print('Error on section:'+secao)
+                        widget.setLayer(None)                        
+                        QgsMessageLog.logMessage('Error on section:'+secao,self.SETTINGS,Qgis.Info)
                         continue
             else:
                 msgs+='\n{} -> Previous Settings NOT found'.format(secao)
                 widget.setLayer(None)
-
-        #if msgs!='':
-        #    print msgs
 
         # Restore template inp file
         template = dlg.getTemplate()
@@ -691,8 +699,7 @@ class QWaterPlugin:
             if not isinstance(tubos[0][0], str):
                 QgsMessageLog.logMessage('Wrong Pipes settings'+tubosMat,self.SETTINGS,Qgis.Warning) #Show Warning Message
                 tubos=QWaterModel.TUBOS_MAT
-            #else:
-                #QgsMessageLog.logMessage('Right Pipes settings'+tubosMat,self.SETTINGS,Qgis.Info) #Show Info Message
+
         self.carregaTabMats(tubos)
         
         # Exibe o resumo de extensoes de rede se tiver PIPES definido
@@ -721,12 +728,10 @@ class QWaterPlugin:
         dlg.ui.Txt_POPINI.editingFinished.emit()
         # show the dialog
         dlg.show()
-        #for i in range(0, dlg.UNUSED_ITEM+1):
-        #    dlg.ui.treeWidget.topLevelItem(i).setExpanded(True)
-        #result = dlg.exec_()
         result = dlg.exec_()
         if result:
             self.accepted()
+
     def accepted(self):
         # Store layers
         dlg = self.dlg #QWaterSettingsDialog()
@@ -739,10 +744,8 @@ class QWaterPlugin:
                 lyrName=curlyr.name()
             else:
                 lyrName=''
-            #print secao,widget,lyrName
             proj.writeEntry(self.SETTINGS,secao, lyrName)
-
-        #proj.writeEntry("ghydraulics",EpanetModel.GIS_SECTIONS[i], dumps(layers))
+        
         # Store Inp file
         templatedir = os.path.join(os.path.dirname(__file__), 'etc')
         template = str(dlg.ui.inpFileLineEdit.text()).replace(templatedir+os.path.sep, '')
@@ -836,7 +839,7 @@ class QWaterPlugin:
     def makeModel(self):
         if self.common.PegaQWaterLayer('PIPES')==False:            
             return
-        dlg = self.dlg #GHydraulicsSettingsDialog()
+        dlg = self.dlg
         template = dlg.getTemplate()
         maker = GHydraulicsModelMaker(template)
         self.iface.mainWindow().statusBar().showMessage('Checking EPANET model')
@@ -857,7 +860,6 @@ class QWaterPlugin:
                     maker.addMissingJunctions()
                     lyrJunctions = self.common.PegaQWaterLayer('JUNCTIONS')
                     lyrJunctions.triggerRepaint()
-            #dlg = GHydraulicsSettingsDialog()
             if autolength:
                 self.iface.mainWindow().statusBar().showMessage('Pipe length calculation')
                 maker.calculateLength()
@@ -889,7 +891,7 @@ class QWaterPlugin:
                                 'EPANET INP file (*.inp)');
 
         if 0 < len(f):
-            dlg = self.dlg #GHydraulicsSettingsDialog()
+            dlg = self.dlg
             template = dlg.getTemplate()
             try:
                 writer = GHydraulicsInpWriter(template, self.iface)
@@ -996,11 +998,9 @@ class QWaterPlugin:
                         item = QTableWidgetItem("{}".format(data))#:7.2f
                         item.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)
                         tableWidget.setItem(row, column, item)
-        #tableWidget.setHorizontalHeaderLabels(['On','DN','Diameter','Roughness','Pressure','Headloss','Reference'])
-        #for i in range(1,4):
-        #    tableWidget.resizeColumnToContents(i)
         tableWidget.removeRow(0)
         tableWidget.resizeColumnsToContents()
+
     def tableToArray(self):
         table=self.dlg.findChild(QTableWidget,'tableWidget')
         result = [self.LeCabecalho(table)]
@@ -1048,7 +1048,8 @@ class QWaterPlugin:
                         ['ID with Pressure','node_id_pressure.qml'],
                         ['Demands','node_demand.qml'],
                         ['Fittings','node_fittings.qml'],                        
-                        ['Pressure','node_pressure.qml']],
+                        ['Pressure','node_pressure.qml'],
+                        ['Static Pressure','node_StaticPressure.qml']],
                 'PUMPS':[['Pump','node_pump.qml']],
                 'RESERVOIRS':[['Reservoir','node_reserv.qml']],
                 'TANKS':[['Tank','node_tank.qml']],
@@ -1085,7 +1086,7 @@ class QWaterPlugin:
             (message, success) = layer.loadNamedStyle(os.path.join(qml_path, qml_Lst[1]))
             if not success:  # if style not loaded remove it
                 style_manager.removeStyle(style_name)
-                print('{} \'{}\''.format(message,style_name))
+                QgsMessageLog.logMessage('{} \'{}\''.format(message,style_name),self.SETTINGS,Qgis.Info)                
         '''
         basepath = os.path.dirname(__file__)#os.path.realpath(
         FullPath=os.path.join(basepath, 'style/'+Estilo)
@@ -1136,8 +1137,8 @@ class QWaterPlugin:
         for i in range(0,widget.count()):
             layer = widget.layer(i)
             if layer and (layer.type() != layer.MeshLayer):
-                cap = layer.dataProvider().capabilities()
-                if cap<=1024:
+                caps = layer.dataProvider().capabilities()
+                if not (caps & Qgis.RasterInterfaceCapability.IdentifyValue): #era: caps<=1024:
                     outList.append(layer)
 
         widget.setExceptedLayerList(outList)
@@ -1154,11 +1155,19 @@ class QWaterPlugin:
         outList=[]
         for i in range(0,ml.count()):
             layer = ml.layer(i)
-            if layer.type() != layer.MeshLayer:
-                cap = layer.dataProvider().capabilities()
-                if cap<6:
+            if layer and (layer.type() != layer.MeshLayer):
+                caps = layer.dataProvider().capabilities()
+                if not (caps & Qgis.RasterInterfaceCapability.IdentifyValue): #era: caps<6
                     outList.append(layer)
         ml.setExceptedLayerList(outList) 
+        
+        #Check Dem Layer is defined and select
+        proj = QgsProject.instance()
+        ProjVar=proj.readEntry(QWaterPlugin.SETTINGS, 'DEM')[0]        
+        if ProjVar!='':            
+            demLyr=proj.mapLayersByName(ProjVar)[0]
+            if demLyr:
+                ml.setLayer(demLyr)
         
         #ButtonBox
         bb=QDialogButtonBox()
@@ -1180,7 +1189,7 @@ class QWaterPlugin:
         dlg.setMinimumWidth(300)
         
         # Signals answers
-        def ok():       
+        def ok():            
             for i in range(layOut.count()):
                 item = layOut.itemAt(i)
                 widget = item.widget()
@@ -1188,12 +1197,13 @@ class QWaterPlugin:
                     tipo = widget.text().split(':')[0]
                     if widget.isChecked():
                         self.RasterSampling(ml.currentLayer(),lyrList[tipo])
-           
+            QApplication.restoreOverrideCursor()
             dlg.close()
             #self.RasterSampling(ml.currentLayer())
             #curlyr = ml.currentLayer()
         def cancel():            
             dlg.close()
+            QApplication.restoreOverrideCursor()
             
         #connect to signals
         bb.accepted.connect(ok)
@@ -1206,14 +1216,15 @@ class QWaterPlugin:
         if nodeLyr.selectedFeatureCount()==0:
             feicoes=nodeLyr.getFeatures()
         else:
-            resp=QMessageBox.question(None,'QWater',self.tr('Update only selected features {}?'.format(nodeLyr.name())),
+            msg = self.tr('Update only selected features {}?')
+            resp=QMessageBox.question(None,'QWater',msg.format(nodeLyr.name()),
                                       QMessageBox.Yes, QMessageBox.No)
             if resp==QMessageBox.Yes:
                 feicoes=nodeLyr.selectedFeatures()
             else:
                 feicoes=nodeLyr.getFeatures()
         noElevPtos=[]
-        
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         # if meshlayer type create render before get values
         if mdtLyr.type() == mdtLyr.MeshLayer:
             mdtLyr.createMapRenderer(QgsRenderContext())
@@ -1284,7 +1295,6 @@ class QWaterPlugin:
         tubosMat=proj.readEntry(self.SETTINGS, "TUBOS_MAT","0")[0]            
         if tubosMat=='0':
             raise GHydraulicsException(self.tr('ERROR: Please, Define Pipes on settings dialog First!'))
-            #tubos=QWaterModel.TUBOS_MAT
         else:
             tubos=eval(tubosMat)
             if not isinstance(tubos[0][0], str):
@@ -1299,7 +1309,6 @@ class QWaterPlugin:
             diam = eval(tubos[linha][diaIdx])
             diaXdn[diam]=eval(tubos[linha][dnIdx])
         
-        #diaXdn= [[each_list[i] for i in indices] for each_list in tubos]        
         noDNdef = []
         #Update DN field
         for f in pipeLyr.getFeatures():
@@ -1344,10 +1353,58 @@ class QWaterPlugin:
                 resp = curves_d
         return resp
 
-    def curve_editor(self):
-        #iface.messageBar().pushMessage(self.SETTINGS, 'Curve Editor Dialog not implemented yet!', level=Qgis.Info, duration=3)
+    def curve_editor(self):        
         curvas = self.read_Project_Curves()
         if curvas:
             self.params.curves = curvas        
         curve_dialog = GraphDialog(self, self.iface.mainWindow(), self.params, edit_type=1)
         curve_dialog.exec_()
+    
+    #Return a dictionary with QWater layers like: {secao: layer}
+    def get_QWater_layers(self):
+        proj = QgsProject.instance()
+        QW_layers={}
+        QWaterEntries=proj.entryList(QWaterPlugin.SETTINGS, '')        
+        # get QWater layers        
+        for secao in EpanetModel.GIS_SECTIONS:
+            if secao in QWaterEntries:
+                lyrName=proj.readEntry(QWaterPlugin.SETTINGS, secao, "")[0]
+                layerEntry=proj.mapLayersByName(lyrName)
+                if layerEntry:
+                    QW_layers[secao]=layerEntry[0]
+        return QW_layers
+    def QWater_layers_connect(self):        
+        QW_layers = self.get_QWater_layers()
+        for layer in QW_layers.values():
+            layer.layerModified.connect(self.QWater_layers_Editing)                
+
+    def QWater_layers_disconnect(self):
+        QW_layers = self.get_QWater_layers()        
+        for layer in QW_layers.values():  
+            try:
+                layer.layerModified.disconnect(self.QWater_layers_Editing)                
+            except:
+                pass
+
+    def QWater_layers_isEditing(self):
+        QW_layers = self.get_QWater_layers()
+        for layer in QW_layers.values():            
+            if layer.isEditable():
+                if layer.isModified():
+                    return True
+        return False
+
+    def QWater_layers_Editing(self):
+        self.saveEditsAction.setEnabled(self.QWater_layers_isEditing())        
+        
+    def save_QWater_Edits(self):
+        curLayer = self.iface.activeLayer()
+        QW_layers = self.get_QWater_layers()
+        for layer in QW_layers.values():
+            if layer.isEditable():
+                if layer.isModified():
+                    layer.commitChanges()
+                else:
+                    layer.rollBack()
+        self.iface.layerTreeView().currentLayerChanged.emit(curLayer)
+        self.saveEditsAction.setEnabled(False)
